@@ -1,0 +1,172 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ========================================================
+   Codessiance '26 — Spotify Wrapped Design Tokens
+   ======================================================== */
+
+@theme inline {
+  /* Tailwind color mappings */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-display);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+
+  /* shadcn color mappings */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Spotify core colors as Tailwind utilities */
+  --color-spotify-black: #121212;
+  --color-spotify-black-pure: #000000;
+  --color-spotify-elevated: #181818;
+  --color-spotify-elevated-hover: #282828;
+  --color-spotify-green: #1DB954;
+  --color-spotify-green-bright: #1ED760;
+  --color-spotify-white: #FFFFFF;
+  --color-spotify-grey: #B3B3B3;
+  --color-spotify-grey-subtle: #727272;
+
+  /* Wrap gradient accent colors */
+  --color-wrap-pink: #F037A5;
+  --color-wrap-blue: #536AE2;
+  --color-wrap-yellow: #FFCC00;
+  --color-wrap-orange: #FF6437;
+
+  /* Flat UI Solid Section Colors (2023 Aesthetic) */
+  --color-flat-pink: #F037A5;
+  --color-flat-yellow: #FFCC00;
+  --color-flat-orange: #FF6437;
+  --color-flat-green: #1ED760;
+  --color-flat-blue: #536AE2;
+  --color-flat-black: #121212;
+}
+
+:root {
+  /* ── Spotify Core Palette ── */
+  --spotify-black: #121212;
+  --spotify-black-pure: #000000;
+  --spotify-elevated: #181818;
+  --spotify-elevated-hover: #282828;
+  --spotify-green: #1DB954;
+  --spotify-green-bright: #1ED760;
+  --spotify-white: #FFFFFF;
+  --spotify-grey: #B3B3B3;
+  --spotify-grey-subtle: #727272;
+
+  /* ── Wrap Gradient Accents ── */
+  --wrap-pink: #F037A5;
+  --wrap-blue: #536AE2;
+  --wrap-yellow: #FFCC00;
+  --wrap-orange: #FF6437;
+
+  /* ── shadcn dark theme overrides (Spotify-inspired) ── */
+  --background: #121212;
+  --foreground: #FFFFFF;
+  --card: #181818;
+  --card-foreground: #FFFFFF;
+  --popover: #181818;
+  --popover-foreground: #FFFFFF;
+  --primary: #1DB954;
+  --primary-foreground: #000000;
+  --secondary: #282828;
+  --secondary-foreground: #FFFFFF;
+  --muted: #282828;
+  --muted-foreground: #B3B3B3;
+  --accent: #282828;
+  --accent-foreground: #FFFFFF;
+  --destructive: #E74C3C;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #1DB954;
+  --chart-1: #1DB954;
+  --chart-2: #536AE2;
+  --chart-3: #F037A5;
+  --chart-4: #FFCC00;
+  --chart-5: #FF6437;
+  --radius: 0.5rem;
+  --sidebar: #181818;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #1DB954;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #282828;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #1DB954;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-color: var(--spotify-black);
+    color: var(--spotify-white);
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: auto; /* Lenis handles smooth scrolling */
+  }
+
+  /* ── Selection styling ── */
+  ::selection {
+    background-color: var(--spotify-green);
+    color: var(--spotify-black-pure);
+  }
+
+  /* ── Scrollbar styling (Webkit) ── */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--spotify-black-pure);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--spotify-grey-subtle);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--spotify-grey);
+  }
+}
