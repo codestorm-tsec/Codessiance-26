@@ -22,7 +22,6 @@ export default function Home() {
         {/* pb-20 clears the fixed player bar */}
         <Hero />
         <Genres />
-        <Artists />
         <Timeline />
         <TopArtist />
         <InRotation />
