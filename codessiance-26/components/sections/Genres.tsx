@@ -83,16 +83,16 @@ export default function Genres() {
         {/* Section header */}
         <div ref={headerRef} className="mb-16 text-center md:text-left opacity-0">
           <p
-            className="text-lg uppercase tracking-[0.3em] font-bold mb-3 border-4 border-black inline-block px-4 py-1 bg-white shadow-[4px_4px_0_0_#000]"
+            className="text-base md:text-lg uppercase tracking-[0.3em] font-bold mb-3 border-4 border-black inline-block px-4 py-1 bg-white shadow-[4px_4px_0_0_#000]"
             style={{ fontFamily: "var(--font-body)" }}
           >
             Your Top Genres
           </p>
           <h2
-            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase mt-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase mt-6"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Pick Your<br/>Track
+            Pick Your<br />Track
           </h2>
         </div>
 

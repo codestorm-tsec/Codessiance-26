@@ -105,7 +105,7 @@ export default function Hero() {
         {/* Left Column: Big Typography */}
         <div ref={headlineRef} className="space-y-[-2vw]">
           <h1
-            className="text-[12vw] md:text-[9vw] font-black tracking-tighter leading-[0.85] uppercase"
+            className="text-[9vw] md:text-[6vw] font-black tracking-tighter leading-[0.85] uppercase"
             style={{ fontFamily: "var(--font-display)" }}
           >
             <span className="block overflow-hidden pb-4">

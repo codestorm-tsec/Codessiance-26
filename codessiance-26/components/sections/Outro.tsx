@@ -106,7 +106,7 @@ export default function Outro() {
               Add to Playlist
             </p>
             <h2
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase mt-6"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase mt-6"
               style={{ fontFamily: "var(--font-display)" }}
             >
               Your<br/>Codessiance<br/>

@@ -151,7 +151,7 @@ export default function TopArtist() {
             Top Artist of the Year
           </p>
           <h2
-            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase mt-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase mt-6"
             style={{ fontFamily: "var(--font-display)" }}
           >
             The Grand
@@ -203,7 +203,7 @@ export default function TopArtist() {
 
                 <span
                   className={`font-black text-black/20 mb-2 leading-none ${
-                    isGrandPrize ? "text-[8rem] md:text-[10rem] -mt-12 -z-10" : "text-7xl md:text-8xl"
+                    isGrandPrize ? "text-[5rem] md:text-[7rem] -mt-12 -z-10" : "text-5xl md:text-6xl"
                   }`}
                   style={{ fontFamily: "var(--font-display)" }}
                 >
@@ -222,8 +222,8 @@ export default function TopArtist() {
                 <span
                   className={`font-black text-white [-webkit-text-stroke:2px_black] ${
                     isGrandPrize
-                      ? "text-6xl md:text-7xl"
-                      : "text-4xl md:text-5xl"
+                      ? "text-4xl md:text-5xl"
+                      : "text-3xl md:text-4xl"
                   }`}
                   style={{ fontFamily: "var(--font-display)" }}
                 >

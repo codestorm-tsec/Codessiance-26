@@ -1,28 +1,34 @@
 import type { Metadata } from "next";
-import { Archivo, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 
 /**
- * Display font: Archivo (weight 400-900)
+ * Display font: Spotify Mix Ultra
  * Used for big Wrapped-style numerals, headlines, and stat callouts.
- * Closest free alternative to Spotify Circular — condensed, heavy grotesque.
  */
-const archivo = Archivo({
+const spotifyMixUltra = localFont({
+  src: "../font/SpotifyMix-Ultra.woff2",
+  weight: "900",
+  style: "normal",
   variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 
 /**
- * Body font: Inter (weight 400-600)
+ * Body font: Spotify Mix
  * Clean, readable body text and UI elements.
  */
-const inter = Inter({
+const spotifyMix = localFont({
+  src: [
+    { path: "../font/SpotifyMix-Light.woff2", weight: "300", style: "normal" },
+    { path: "../font/SpotifyMix-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../font/SpotifyMix-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../font/SpotifyMix-Bold.woff2", weight: "700", style: "normal" },
+    { path: "../font/SpotifyMix-Extrabold.woff2", weight: "800", style: "normal" },
+    { path: "../font/SpotifyMix-Black.woff2", weight: "900", style: "normal" },
+  ],
   variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -46,7 +52,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${inter.variable} h-full antialiased`}
+      className={`${spotifyMixUltra.variable} ${spotifyMix.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body
