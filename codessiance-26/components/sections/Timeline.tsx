@@ -2,12 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TIMELINE_EVENTS } from "@/lib/constants";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 const ACCENT_COLORS = [
   { bg: "#1ED760", text: "#000" },
@@ -35,59 +30,78 @@ const EVENT_ICONS: Record<string, string> = {
   closing: "🎉",
 };
 
-// Pre-computed to avoid SSR hydration mismatch
+// Pre-computed waveform — avoids SSR/client hydration mismatch
 const WAVEFORM_BARS = Array.from({ length: 60 }).map((_, i) => ({
   x: i * 20,
-  y: Math.round((100 - Math.max(4, 20 + Math.sin(i * 0.4) * 40 + Math.cos(i * 0.7) * 30) / 2) * 100) / 100,
-  h: Math.round(Math.max(4, 20 + Math.sin(i * 0.4) * 40 + Math.cos(i * 0.7) * 30) * 100) / 100,
+  y: Math.round((100 - Math.max(4, 20 + Math.sin(i * 0.4) * 40 + Math.cos(i * 0.7) * 30) / 2) * 10) / 10,
+  h: Math.round(Math.max(4, 20 + Math.sin(i * 0.4) * 40 + Math.cos(i * 0.7) * 30) * 10) / 10,
 }));
 
-export default function Timeline() {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+const TOTAL = TIMELINE_EVENTS.length;
 
-  const activeEvent = TIMELINE_EVENTS[activeIndex];
-  const accent = ACCENT_COLORS[activeIndex];
+export default function Timeline() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const prevIndexRef = useRef(0);
+
+  // Animate the card changing (fly in from direction of scroll)
+  useEffect(() => {
+    if (!cardRef.current) return;
+    const direction = activeIndex > prevIndexRef.current ? 1 : -1;
+    prevIndexRef.current = activeIndex;
+
+    gsap.fromTo(
+      cardRef.current,
+      { x: 150 * direction, opacity: 0, scale: 0.9, rotation: 5 * direction },
+      { x: 0, opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "back.out(1.2)" }
+    );
+  }, [activeIndex]);
 
   useEffect(() => {
-    const slider = sliderRef.current;
-    const wrapper = wrapperRef.current;
-    if (!slider || !wrapper) return;
+    const section = sectionRef.current;
+    if (!section) return;
 
-    const ctx = gsap.context(() => {
-      // Classic GSAP horizontal scroll — pin the wrapper, slide the strip
-      gsap.to(slider, {
-        x: () => -(slider.scrollWidth - wrapper.offsetWidth),
-        ease: "none",
-        scrollTrigger: {
-          trigger: wrapper,
-          start: "top top",
-          end: () => `+=${slider.scrollWidth - wrapper.offsetWidth}`,
-          pin: true,
-          scrub: 0.8,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const idx = Math.min(
-              TIMELINE_EVENTS.length - 1,
-              Math.round(self.progress * (TIMELINE_EVENTS.length - 1))
-            );
-            setActiveIndex(idx);
-          },
-        },
+    const onScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const scrolled = -rect.top;
+      const scrollable = section.offsetHeight - window.innerHeight;
+
+      if (scrolled <= 0 || scrollable <= 0) {
+        setActiveIndex(0);
+        return;
+      }
+
+      const progress = Math.min(1, scrolled / scrollable);
+      const idx = Math.min(TOTAL - 1, Math.floor(progress * TOTAL));
+
+      setActiveIndex((prev) => {
+        if (prev !== idx) return idx;
+        return prev;
       });
-    });
+    };
 
-    return () => ctx.revert();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll(); // run once on mount
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const event = TIMELINE_EVENTS[activeIndex];
+  const prevEvent = activeIndex > 0 ? TIMELINE_EVENTS[activeIndex - 1] : null;
+  const nextEvent = activeIndex < TOTAL - 1 ? TIMELINE_EVENTS[activeIndex + 1] : null;
+  const accent = ACCENT_COLORS[activeIndex];
+  const icon = EVENT_ICONS[event.id] ?? "⚡";
+
   return (
-    <section id="timeline" className="border-b-8 border-black">
-      {/* ── Pinned wrapper — exactly one viewport tall ─────────────── */}
-      <div
-        ref={wrapperRef}
-        className="relative h-screen overflow-hidden flex flex-col bg-flat-pink"
-      >
+    <section
+      ref={sectionRef}
+      id="timeline"
+      className="relative border-b-8 border-black"
+      style={{ height: `${(TOTAL + 1) * 100}vh` }}
+    >
+      {/* ── Sticky panel — stays in view while you scroll ─────────── */}
+      <div className="sticky top-0 h-screen overflow-hidden flex flex-col bg-flat-pink">
+
         {/* Waveform BG */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.07] z-0">
           <svg viewBox="0 0 1200 200" className="w-full h-full" preserveAspectRatio="none">
@@ -97,8 +111,8 @@ export default function Timeline() {
           </svg>
         </div>
 
-        {/* ── TOP: Header (fixed inside pinned area) ────────────────── */}
-        <div className="relative z-30 pt-7 pb-3 px-8 shrink-0">
+        {/* ── Header ────────────────────────────────────────────────── */}
+        <div className="relative z-10 pt-7 pb-3 px-8 shrink-0">
           <p
             className="text-sm uppercase tracking-[0.3em] font-bold mb-1 border-4 border-black inline-block px-3 py-0.5 bg-white shadow-[4px_4px_0_0_#000]"
             style={{ fontFamily: "var(--font-body)" }}
@@ -116,141 +130,128 @@ export default function Timeline() {
           </h2>
         </div>
 
-        {/* ── MIDDLE: Slider — cards are 100vw each so only 1 shows ── */}
-        <div className="relative z-20 flex-1 flex items-stretch overflow-visible">
+        {/* ── Card stage — pops in from left/right ──────────────────── */}
+        <div className="relative z-10 flex-1 flex items-center justify-center px-6">
           <div
-            ref={sliderRef}
-            className="flex will-change-transform"
-            style={{ width: "max-content" }}
+            ref={cardRef}
+            key={activeIndex}
+            className="w-full max-w-md border-4 border-black shadow-[10px_10px_0_0_#000] overflow-hidden relative"
+            style={{ backgroundColor: accent.bg }}
           >
-            {TIMELINE_EVENTS.map((event, index) => {
-              const ac = ACCENT_COLORS[index];
-              const icon = EVENT_ICONS[event.id] ?? "⚡";
-
-              return (
-                <div
-                  key={event.id}
-                  className="shrink-0 flex items-center justify-center px-8"
-                  style={{ width: "100vw" }}
-                >
-                  <div
-                    className="w-full max-w-lg border-4 border-black shadow-[10px_10px_0_0_#000] overflow-hidden relative"
-                    style={{ backgroundColor: ac.bg }}
-                  >
-                    {/* Large background number */}
-                    <div
-                      className="absolute top-0 right-2 text-[8rem] font-black leading-none opacity-10 select-none pointer-events-none"
-                      style={{ fontFamily: "var(--font-display)", color: ac.text }}
-                      aria-hidden
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </div>
-
-                    <div className="relative p-8">
-                      <div className="text-5xl mb-4">{icon}</div>
-                      <div
-                        className="text-6xl md:text-7xl font-black tracking-tighter leading-none mb-2"
-                        style={{ fontFamily: "var(--font-display)", color: ac.text }}
-                      >
-                        {event.time}
-                      </div>
-                      <div
-                        className="text-xl md:text-2xl font-bold leading-snug"
-                        style={{ color: ac.text, fontFamily: "var(--font-body)" }}
-                      >
-                        {event.label}
-                      </div>
-                      <span
-                        className="inline-block mt-4 text-sm font-black uppercase px-3 py-1 bg-black text-white border-2 border-black"
-                        style={{ fontFamily: "var(--font-body)" }}
-                      >
-                        Day {event.day}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-            {/* Final "That's a Wrap" card */}
+            {/* Decorative large number */}
             <div
-              className="shrink-0 flex items-center justify-center px-8"
-              style={{ width: "100vw" }}
+              className="absolute top-0 right-2 text-[8rem] font-black leading-none opacity-10 select-none pointer-events-none"
+              style={{ fontFamily: "var(--font-display)", color: accent.text }}
+              aria-hidden
             >
-              <div className="w-full max-w-lg border-4 border-black shadow-[10px_10px_0_0_#000] bg-black p-10 flex flex-col items-center justify-center text-center">
-                <span className="text-6xl mb-4">🏁</span>
-                <p
-                  className="text-4xl font-black uppercase text-flat-green leading-tight"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  That&apos;s a Wrap!
-                </p>
-                <p
-                  className="text-sm font-bold text-white/50 mt-3"
-                  style={{ fontFamily: "var(--font-body)" }}
-                >
-                  Codessiance &apos;26
-                </p>
+              {String(activeIndex + 1).padStart(2, "0")}
+            </div>
+
+            <div className="relative p-8">
+              <div className="text-5xl mb-4">{icon}</div>
+              <div
+                className="text-6xl md:text-7xl font-black tracking-tighter leading-none mb-2"
+                style={{ fontFamily: "var(--font-display)", color: accent.text }}
+              >
+                {event.time}
               </div>
+              <div
+                className="text-xl font-bold leading-snug"
+                style={{ color: accent.text, fontFamily: "var(--font-body)" }}
+              >
+                {event.label}
+              </div>
+              <span
+                className="inline-block mt-4 text-sm font-black uppercase px-3 py-1 bg-black text-white border-2 border-black"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                Day {event.day}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* ── BOTTOM: Progress rail + Info box ─────────────────────── */}
-        <div className="relative z-30 px-6 pb-5 shrink-0">
-          {/* Dot progress rail */}
-          <div className="relative h-2 bg-black/25 border-2 border-black mb-4">
-            <div
-              className="absolute inset-y-0 left-0 bg-black transition-none"
-              style={{
-                width: `${(activeIndex / TIMELINE_EVENTS.length) * 100}%`,
-              }}
+        {/* ── Bottom: Arc Rail + Info Box ──────────────────────────── */}
+        <div className="relative z-10 px-6 pb-5 shrink-0 flex flex-col items-center">
+          
+          {/* ── Curved Arc Timeline ── */}
+          <div className="relative w-full max-w-2xl h-24 sm:h-32 mb-4 overflow-hidden">
+            {/* The curved line */}
+            <div 
+              className="absolute top-10 left-[-20%] w-[140%] h-[1000px] rounded-[50%] border-t-[4px] border-black/20"
             />
-            {TIMELINE_EVENTS.map((_, i) => (
-              <div
-                key={i}
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-black z-10 transition-colors duration-200"
-                style={{
-                  left: `${(i / TIMELINE_EVENTS.length) * 100}%`,
-                  backgroundColor: i <= activeIndex ? "#000" : "#fff",
-                }}
-              />
-            ))}
+            {/* An active glowing part over the top */}
+            <div 
+              className="absolute top-10 left-[-20%] w-[140%] h-[1000px] rounded-[50%] border-t-[4px] border-flat-green/80 shadow-[0_0_15px_#1ED760]"
+              style={{ clipPath: 'polygon(30% 0, 70% 0, 70% 10%, 30% 10%)' }}
+            />
+
+            {/* Previous Event Pill */}
+            {prevEvent && (
+              <div className="absolute left-[10%] sm:left-[15%] top-[70%] -translate-y-1/2 -rotate-12 transition-all duration-300">
+                <span 
+                  className="px-3 py-1 rounded-full bg-flat-green text-black font-bold border-2 border-black text-xs sm:text-sm uppercase shadow-[2px_2px_0_0_#000]"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {prevEvent.time}
+                </span>
+              </div>
+            )}
+
+            {/* Current Event Pill (Top Center) */}
+            <div className="absolute left-1/2 top-10 -translate-x-1/2 -translate-y-1/2 z-10 transition-all duration-300">
+              <span 
+                className="px-6 py-1.5 rounded-full bg-white text-black font-black border-[3px] border-black text-sm sm:text-lg uppercase shadow-[4px_4px_0_0_#000]"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {event.time}
+              </span>
+            </div>
+
+            {/* Next Event Pill */}
+            {nextEvent && (
+              <div className="absolute right-[10%] sm:right-[15%] top-[70%] -translate-y-1/2 rotate-12 transition-all duration-300">
+                <span 
+                  className="px-3 py-1 rounded-full bg-flat-green text-black font-bold border-2 border-black text-xs sm:text-sm uppercase shadow-[2px_2px_0_0_#000]"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {nextEvent.time}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Info text box */}
-          <div className="border-4 border-black shadow-[6px_6px_0_0_#000] bg-white p-4 flex items-center gap-5">
-            <span className="text-4xl shrink-0">
-              {EVENT_ICONS[activeEvent?.id] ?? "🏁"}
-            </span>
+          <div
+            className="border-4 border-black shadow-[6px_6px_0_0_#000] bg-white p-4 flex items-center gap-5 w-full max-w-2xl"
+          >
+            <span className="text-4xl shrink-0">{icon}</span>
             <div className="flex-1 min-w-0">
               <p
                 className="text-xs font-black uppercase tracking-widest text-black/40 mb-0.5"
                 style={{ fontFamily: "var(--font-body)" }}
               >
-                Day {activeEvent?.day ?? "—"} · Event {activeIndex + 1} of {TIMELINE_EVENTS.length}
+                Day {event.day} · Event {activeIndex + 1} of {TOTAL}
               </p>
               <p
-                className="text-xl font-black leading-tight truncate"
+                className="text-xl font-black leading-tight"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {activeEvent?.time}
+                {event.time}
                 <span
                   className="ml-3 text-base font-bold text-black/70"
                   style={{ fontFamily: "var(--font-body)" }}
                 >
-                  {activeEvent?.label}
+                  {event.label}
                 </span>
               </p>
             </div>
-            <div className="shrink-0 hidden sm:flex flex-col items-end">
-              <p
-                className="text-xs font-bold text-black/40 uppercase tracking-widest"
-                style={{ fontFamily: "var(--font-body)" }}
-              >
-                scroll ↓
-              </p>
-            </div>
+            <p
+              className="shrink-0 text-xs font-bold text-black/40 uppercase tracking-widest hidden sm:block"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              scroll ↓
+            </p>
           </div>
         </div>
       </div>
