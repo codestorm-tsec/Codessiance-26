@@ -33,11 +33,11 @@ const spotifyMix = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Codessiance '26 | TSEC CodeStorm",
+  title: "Codeissance '26 | TSEC CodeStorm",
   description:
-    "Codessiance — TSEC CodeStorm's flagship 24-hour offline hackathon. Your code. Your story. Wrapped.",
+    "Codeissance — TSEC CodeStorm's flagship 24-hour offline hackathon. Your code. Your story. Wrapped.",
   openGraph: {
-    title: "Codessiance '26 | TSEC CodeStorm",
+    title: "Codeissance '26 | TSEC CodeStorm",
     description:
       "24 hours. 1 campus. Your story — wrapped. TSEC CodeStorm's flagship hackathon.",
     type: "website",

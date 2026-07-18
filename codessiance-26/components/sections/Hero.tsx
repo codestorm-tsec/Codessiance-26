@@ -85,17 +85,17 @@ export default function Hero() {
     >
       {/* Massive Graphic Background */}
       <div ref={graphicRef} className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-        <Starburst 
-          points={14} 
-          innerRadius={45} 
-          outerRadius={100} 
-          className="spin-slow w-[800px] h-[800px] text-flat-yellow opacity-90 mix-blend-multiply" 
+        <Starburst
+          points={14}
+          innerRadius={45}
+          outerRadius={100}
+          className="spin-slow w-[800px] h-[800px] text-flat-yellow opacity-90 mix-blend-multiply"
         />
-        <Starburst 
-          points={8} 
-          innerRadius={60} 
-          outerRadius={100} 
-          className="spin-slow w-[600px] h-[600px] text-flat-pink absolute opacity-90 mix-blend-multiply" 
+        <Starburst
+          points={8}
+          innerRadius={60}
+          outerRadius={100}
+          className="spin-slow w-[600px] h-[600px] text-flat-pink absolute opacity-90 mix-blend-multiply"
           style={{ animationDirection: 'reverse', animationDuration: '30s' }}
         />
       </div>
@@ -135,7 +135,7 @@ export default function Hero() {
               className="text-xl md:text-2xl font-bold text-black opacity-0"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Codessiance &apos;26 — TSEC CodeStorm&apos;s flagship 24-hour offline
+              Codeissance &apos;26 — TSEC CodeStorm&apos;s flagship 24-hour offline
               hackathon. Your code, your story — wrapped.
             </p>
           </div>

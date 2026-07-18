@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TIMELINE_EVENTS } from "@/lib/constants";
@@ -9,259 +9,248 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+const ACCENT_COLORS = [
+  { bg: "#1ED760", text: "#000" },
+  { bg: "#FFCC00", text: "#000" },
+  { bg: "#FF6437", text: "#000" },
+  { bg: "#536AE2", text: "#fff" },
+  { bg: "#F037A5", text: "#fff" },
+  { bg: "#1ED760", text: "#000" },
+  { bg: "#FFCC00", text: "#000" },
+  { bg: "#FF6437", text: "#000" },
+  { bg: "#536AE2", text: "#fff" },
+  { bg: "#F037A5", text: "#fff" },
+];
+
+const EVENT_ICONS: Record<string, string> = {
+  reporting: "🎟️",
+  inauguration: "🎤",
+  "hack-start": "💻",
+  lunch: "🍕",
+  mentoring: "🧑‍💻",
+  dinner: "🌙",
+  "judging-internal": "⚖️",
+  shortlist: "📋",
+  "judging-final": "🏆",
+  closing: "🎉",
+};
+
+// Pre-computed to avoid SSR hydration mismatch
+const WAVEFORM_BARS = Array.from({ length: 60 }).map((_, i) => ({
+  x: i * 20,
+  y: Math.round((100 - Math.max(4, 20 + Math.sin(i * 0.4) * 40 + Math.cos(i * 0.7) * 30) / 2) * 100) / 100,
+  h: Math.round(Math.max(4, 20 + Math.sin(i * 0.4) * 40 + Math.cos(i * 0.7) * 30) * 100) / 100,
+}));
+
 export default function Timeline() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const playheadRef = useRef<HTMLDivElement>(null);
-  const fillRef = useRef<HTMLDivElement>(null);
-  const markersContainerRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const activeEvent = TIMELINE_EVENTS[activeIndex];
+  const accent = ACCENT_COLORS[activeIndex];
 
   useEffect(() => {
+    const slider = sliderRef.current;
+    const wrapper = wrapperRef.current;
+    if (!slider || !wrapper) return;
+
     const ctx = gsap.context(() => {
-      // Header reveal
-      gsap.fromTo(
-        headerRef.current,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 85%",
+      // Classic GSAP horizontal scroll — pin the wrapper, slide the strip
+      gsap.to(slider, {
+        x: () => -(slider.scrollWidth - wrapper.offsetWidth),
+        ease: "none",
+        scrollTrigger: {
+          trigger: wrapper,
+          start: "top top",
+          end: () => `+=${slider.scrollWidth - wrapper.offsetWidth}`,
+          pin: true,
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const idx = Math.min(
+              TIMELINE_EVENTS.length - 1,
+              Math.round(self.progress * (TIMELINE_EVENTS.length - 1))
+            );
+            setActiveIndex(idx);
           },
-        }
-      );
-
-      // Desktop: Scrub-linked playhead animation
-      const track = trackRef.current;
-      const playhead = playheadRef.current;
-      const fill = fillRef.current;
-      const markers = markersContainerRef.current?.querySelectorAll(".timeline-marker");
-
-      if (track && playhead && fill && markers && markers.length > 0) {
-        // Scrub timeline tied to section scroll
-        const scrubTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 20%",
-            end: "bottom 80%",
-            scrub: 1,
-          },
-        });
-
-        // Animate playhead position and fill width
-        scrubTl.to(playhead, { left: "100%", ease: "none", duration: 1 });
-        scrubTl.to(fill, { width: "100%", ease: "none", duration: 1 }, 0);
-
-        // Stagger marker reveals tied to scroll progress
-        markers.forEach((marker, index) => {
-          const progress = index / (markers.length - 1);
-          const dot = marker.querySelector(".marker-dot");
-          const info = marker.querySelector(".marker-info");
-
-          scrubTl.fromTo(
-            dot,
-            { scale: 0.5, backgroundColor: "#000" },
-            {
-              scale: 1.5,
-              backgroundColor: "#1ED760",
-              duration: 0.05,
-              ease: "power2.out",
-            },
-            progress * 0.95
-          );
-
-          scrubTl.fromTo(
-            info,
-            { opacity: 0.3, y: 10 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.05,
-              ease: "power2.out",
-            },
-            progress * 0.95
-          );
-        });
-      }
-
-      // Mobile: simple stagger reveal
-      const mobileMarkers = sectionRef.current?.querySelectorAll(
-        ".timeline-marker-mobile"
-      );
-      if (mobileMarkers) {
-        gsap.fromTo(
-          mobileMarkers,
-          { opacity: 0, x: -20 },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.5,
-            stagger: 0.08,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 70%",
-            },
-          }
-        );
-      }
-    }, sectionRef);
+        },
+      });
+    });
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      id="timeline"
-      className="relative min-h-screen py-24 md:py-32 overflow-hidden bg-flat-pink text-black border-b-8 border-black"
-    >
-      {/* Waveform SVG texture */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden opacity-[0.08]">
-        <svg
-          viewBox="0 0 1200 200"
-          className="w-full max-w-[1600px] h-auto"
-          preserveAspectRatio="none"
-        >
-          {Array.from({ length: 80 }).map((_, i) => {
-            const exactHeight = Math.max(4, 20 + Math.sin(i * 0.4) * 40 + Math.cos(i * 0.7) * 30);
-            const height = Number(exactHeight.toFixed(2));
-            const y = Number((100 - height / 2).toFixed(2));
-            return (
-              <rect
-                key={i}
-                x={i * 15}
-                y={y}
-                width={8}
-                height={height}
-                fill="black"
-              />
-            );
-          })}
-        </svg>
-      </div>
+    <section id="timeline" className="border-b-8 border-black">
+      {/* ── Pinned wrapper — exactly one viewport tall ─────────────── */}
+      <div
+        ref={wrapperRef}
+        className="relative h-screen overflow-hidden flex flex-col bg-flat-pink"
+      >
+        {/* Waveform BG */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.07] z-0">
+          <svg viewBox="0 0 1200 200" className="w-full h-full" preserveAspectRatio="none">
+            {WAVEFORM_BARS.map((b, i) => (
+              <rect key={i} x={b.x} y={b.y} width={10} height={b.h} fill="black" />
+            ))}
+          </svg>
+        </div>
 
-      <div className="relative z-20 max-w-7xl mx-auto px-6">
-        {/* Section header */}
-        <div ref={headerRef} className="mb-24 text-center opacity-0">
+        {/* ── TOP: Header (fixed inside pinned area) ────────────────── */}
+        <div className="relative z-30 pt-7 pb-3 px-8 shrink-0">
           <p
-            className="text-lg uppercase tracking-[0.3em] font-bold mb-3 border-4 border-black inline-block px-4 py-1 bg-white shadow-[4px_4px_0_0_#000]"
+            className="text-sm uppercase tracking-[0.3em] font-bold mb-1 border-4 border-black inline-block px-3 py-0.5 bg-white shadow-[4px_4px_0_0_#000]"
             style={{ fontFamily: "var(--font-body)" }}
           >
             Minutes Listened
           </p>
           <h2
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase mt-6"
+            className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter uppercase leading-none"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            24 Hours of
-            <br />
-            <span className="text-flat-yellow [-webkit-text-stroke:2px_black] md:[-webkit-text-stroke:4px_black]">Pure Code</span>
+            24 Hours of{" "}
+            <span className="text-flat-yellow [-webkit-text-stroke:2px_black]">
+              Pure Code
+            </span>
           </h2>
         </div>
 
-        {/* Desktop: horizontal track with scrub-linked playhead */}
-        <div className="hidden md:block">
-          {/* Track line */}
-          <div ref={trackRef} className="relative h-4 bg-black rounded-full mx-8 mb-16 border-4 border-black shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
-            {/* Fill */}
-            <div
-              ref={fillRef}
-              className="absolute inset-y-0 left-0 bg-flat-green rounded-full"
-              style={{ width: "0%" }}
-            />
-            {/* Playhead dot */}
-            <div
-              ref={playheadRef}
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white rounded-full border-4 border-black z-10"
-              style={{ left: "0%" }}
-            />
-
-            {/* Marker dots on the track */}
+        {/* ── MIDDLE: Slider — cards are 100vw each so only 1 shows ── */}
+        <div className="relative z-20 flex-1 flex items-stretch overflow-visible">
+          <div
+            ref={sliderRef}
+            className="flex will-change-transform"
+            style={{ width: "max-content" }}
+          >
             {TIMELINE_EVENTS.map((event, index) => {
-              const position = (index / (TIMELINE_EVENTS.length - 1)) * 100;
-              return (
-                <div
-                  key={`dot-${event.id}`}
-                  className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-black"
-                  style={{ left: `${position}%` }}
-                />
-              );
-            })}
-          </div>
+              const ac = ACCENT_COLORS[index];
+              const icon = EVENT_ICONS[event.id] ?? "⚡";
 
-          {/* Milestone markers below track */}
-          <div ref={markersContainerRef} className="grid grid-cols-5 gap-x-4 gap-y-8">
-            {TIMELINE_EVENTS.map((event, index) => (
-              <div
-                key={event.id}
-                className="timeline-marker flex flex-col items-center text-center group"
-              >
-                {/* Marker dot */}
-                <div className="marker-dot w-6 h-6 rounded-full bg-black mb-4 border-4 border-black transition-all shadow-[2px_2px_0_0_#000]" />
-
-                {/* Info */}
-                <div className="marker-info opacity-50 transition-opacity">
-                  <span className="text-sm uppercase font-bold text-black/60 block mb-1">
-                    Day {event.day}
-                  </span>
-                  <span
-                    className="text-2xl lg:text-3xl font-black text-black block mb-1 uppercase"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    {event.time}
-                  </span>
-                  <span
-                    className="text-base font-bold text-black leading-tight block"
-                    style={{ fontFamily: "var(--font-body)" }}
-                  >
-                    {event.label}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile: vertical timeline */}
-        <div className="md:hidden">
-          <div className="relative ml-8">
-            <div className="absolute top-0 bottom-10 left-[-4px] w-2 bg-black rounded-full" />
-            {TIMELINE_EVENTS.map((event, index) => {
               return (
                 <div
                   key={event.id}
-                  className="timeline-marker-mobile relative flex gap-6 pb-12 opacity-0"
+                  className="shrink-0 flex items-center justify-center px-8"
+                  style={{ width: "100vw" }}
                 >
-                  <div className="flex flex-col items-center absolute left-[-11px] top-1">
-                    <div className="w-6 h-6 rounded-full bg-flat-yellow border-4 border-black shrink-0 z-10" />
-                  </div>
-                  <div className="ml-4">
-                    <span className="text-xs uppercase font-bold text-black/60">
-                      Day {event.day}
-                    </span>
-                    <div className="flex flex-col mt-1">
-                      <span
-                        className="text-3xl font-black text-black uppercase"
-                        style={{ fontFamily: "var(--font-display)" }}
+                  <div
+                    className="w-full max-w-lg border-4 border-black shadow-[10px_10px_0_0_#000] overflow-hidden relative"
+                    style={{ backgroundColor: ac.bg }}
+                  >
+                    {/* Large background number */}
+                    <div
+                      className="absolute top-0 right-2 text-[8rem] font-black leading-none opacity-10 select-none pointer-events-none"
+                      style={{ fontFamily: "var(--font-display)", color: ac.text }}
+                      aria-hidden
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </div>
+
+                    <div className="relative p-8">
+                      <div className="text-5xl mb-4">{icon}</div>
+                      <div
+                        className="text-6xl md:text-7xl font-black tracking-tighter leading-none mb-2"
+                        style={{ fontFamily: "var(--font-display)", color: ac.text }}
                       >
                         {event.time}
-                      </span>
-                      <span
-                        className="text-lg font-bold text-black mt-1"
-                        style={{ fontFamily: "var(--font-body)" }}
+                      </div>
+                      <div
+                        className="text-xl md:text-2xl font-bold leading-snug"
+                        style={{ color: ac.text, fontFamily: "var(--font-body)" }}
                       >
                         {event.label}
+                      </div>
+                      <span
+                        className="inline-block mt-4 text-sm font-black uppercase px-3 py-1 bg-black text-white border-2 border-black"
+                        style={{ fontFamily: "var(--font-body)" }}
+                      >
+                        Day {event.day}
                       </span>
                     </div>
                   </div>
                 </div>
               );
             })}
+
+            {/* Final "That's a Wrap" card */}
+            <div
+              className="shrink-0 flex items-center justify-center px-8"
+              style={{ width: "100vw" }}
+            >
+              <div className="w-full max-w-lg border-4 border-black shadow-[10px_10px_0_0_#000] bg-black p-10 flex flex-col items-center justify-center text-center">
+                <span className="text-6xl mb-4">🏁</span>
+                <p
+                  className="text-4xl font-black uppercase text-flat-green leading-tight"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  That&apos;s a Wrap!
+                </p>
+                <p
+                  className="text-sm font-bold text-white/50 mt-3"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  Codessiance &apos;26
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── BOTTOM: Progress rail + Info box ─────────────────────── */}
+        <div className="relative z-30 px-6 pb-5 shrink-0">
+          {/* Dot progress rail */}
+          <div className="relative h-2 bg-black/25 border-2 border-black mb-4">
+            <div
+              className="absolute inset-y-0 left-0 bg-black transition-none"
+              style={{
+                width: `${(activeIndex / TIMELINE_EVENTS.length) * 100}%`,
+              }}
+            />
+            {TIMELINE_EVENTS.map((_, i) => (
+              <div
+                key={i}
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-black z-10 transition-colors duration-200"
+                style={{
+                  left: `${(i / TIMELINE_EVENTS.length) * 100}%`,
+                  backgroundColor: i <= activeIndex ? "#000" : "#fff",
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Info text box */}
+          <div className="border-4 border-black shadow-[6px_6px_0_0_#000] bg-white p-4 flex items-center gap-5">
+            <span className="text-4xl shrink-0">
+              {EVENT_ICONS[activeEvent?.id] ?? "🏁"}
+            </span>
+            <div className="flex-1 min-w-0">
+              <p
+                className="text-xs font-black uppercase tracking-widest text-black/40 mb-0.5"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                Day {activeEvent?.day ?? "—"} · Event {activeIndex + 1} of {TIMELINE_EVENTS.length}
+              </p>
+              <p
+                className="text-xl font-black leading-tight truncate"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {activeEvent?.time}
+                <span
+                  className="ml-3 text-base font-bold text-black/70"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {activeEvent?.label}
+                </span>
+              </p>
+            </div>
+            <div className="shrink-0 hidden sm:flex flex-col items-end">
+              <p
+                className="text-xs font-bold text-black/40 uppercase tracking-widest"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                scroll ↓
+              </p>
+            </div>
           </div>
         </div>
       </div>
