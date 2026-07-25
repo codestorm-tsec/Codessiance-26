@@ -2,19 +2,17 @@
 
 import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TIMELINE_EVENTS } from "@/lib/constants";
 
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 const ACCENT_COLORS = [
-  { bg: "#1ED760", text: "#000" },
-  { bg: "#FFCC00", text: "#000" },
-  { bg: "#FF6437", text: "#000" },
-  { bg: "#536AE2", text: "#fff" },
-  { bg: "#F037A5", text: "#fff" },
-  { bg: "#1ED760", text: "#000" },
-  { bg: "#FFCC00", text: "#000" },
-  { bg: "#FF6437", text: "#000" },
-  { bg: "#536AE2", text: "#fff" },
-  { bg: "#F037A5", text: "#fff" },
+  "#1DB954", "#8B7CFF", "#FF4632", "#1DB954",
+  "#8B7CFF", "#FF4632", "#1DB954", "#8B7CFF",
+  "#FF4632", "#1DB954",
 ];
 
 const EVENT_ICONS: Record<string, string> = {
@@ -30,65 +28,43 @@ const EVENT_ICONS: Record<string, string> = {
   closing: "🎉",
 };
 
-// Pre-computed waveform — avoids SSR/client hydration mismatch
-const WAVEFORM_BARS = Array.from({ length: 60 }).map((_, i) => ({
-  x: i * 20,
-  y: Math.round((100 - Math.max(4, 20 + Math.sin(i * 0.4) * 40 + Math.cos(i * 0.7) * 30) / 2) * 10) / 10,
-  h: Math.round(Math.max(4, 20 + Math.sin(i * 0.4) * 40 + Math.cos(i * 0.7) * 30) * 10) / 10,
-}));
-
 const TOTAL = TIMELINE_EVENTS.length;
 
 export default function Timeline() {
   const sectionRef = useRef<HTMLElement>(null);
+  const pinTargetRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const prevIndexRef = useRef(0);
 
-  // Animate the card changing (fly in from direction of scroll)
   useEffect(() => {
     if (!cardRef.current) return;
-    const direction = activeIndex > prevIndexRef.current ? 1 : -1;
-    prevIndexRef.current = activeIndex;
-
     gsap.fromTo(
       cardRef.current,
-      { x: 150 * direction, opacity: 0, scale: 0.9, rotation: 5 * direction },
-      { x: 0, opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "back.out(1.2)" }
+      { opacity: 0, scale: 0.95 },
+      { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }
     );
   }, [activeIndex]);
 
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const onScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const scrolled = -rect.top;
-      const scrollable = section.offsetHeight - window.innerHeight;
-
-      if (scrolled <= 0 || scrollable <= 0) {
-        setActiveIndex(0);
-        return;
-      }
-
-      const progress = Math.min(1, scrolled / scrollable);
-      const idx = Math.min(TOTAL - 1, Math.floor(progress * TOTAL));
-
-      setActiveIndex((prev) => {
-        if (prev !== idx) return idx;
-        return prev;
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top top+=64", // Pin right below 64px HeaderNav
+        end: `+=${TOTAL * 400}`, // Scroll distance for cycling all timeline cards
+        pin: pinTargetRef.current,
+        pinSpacing: true,
+        scrub: 0.2,
+        onUpdate: (self) => {
+          const idx = Math.min(TOTAL - 1, Math.floor(self.progress * TOTAL));
+          setActiveIndex(idx);
+        },
       });
-    };
+    }, sectionRef);
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll(); // run once on mount
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => ctx.revert();
   }, []);
 
   const event = TIMELINE_EVENTS[activeIndex];
-  const prevEvent = activeIndex > 0 ? TIMELINE_EVENTS[activeIndex - 1] : null;
-  const nextEvent = activeIndex < TOTAL - 1 ? TIMELINE_EVENTS[activeIndex + 1] : null;
   const accent = ACCENT_COLORS[activeIndex];
   const icon = EVENT_ICONS[event.id] ?? "⚡";
 
@@ -96,162 +72,84 @@ export default function Timeline() {
     <section
       ref={sectionRef}
       id="timeline"
-      className="relative border-b-8 border-black"
-      style={{ height: `${(TOTAL + 1) * 100}vh` }}
+      className="relative section-light grain-overlay"
+      style={{ backgroundColor: "#EBE6DF" }}
     >
-      {/* ── Sticky panel — stays in view while you scroll ─────────── */}
-      <div className="sticky top-0 h-screen overflow-hidden flex flex-col bg-flat-pink">
+      {/* Pinned Stage Container */}
+      <div
+        ref={pinTargetRef}
+        className="w-full h-[calc(100vh-4rem)] flex flex-col justify-between pt-6 pb-8 px-6 md:px-12"
+      >
+        {/* Top Header */}
+        <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <h2
+              className="text-3xl sm:text-5xl md:text-6xl font-normal leading-tight text-black tracking-tight"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              The <strong className="font-black text-black">Top Lists</strong> of 2026
+            </h2>
+            <p className="mt-1 text-sm md:text-base font-bold text-black/60">
+              24 Hours of Non-stop Innovation & Code
+            </p>
+          </div>
 
-        {/* Waveform BG */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.07] z-0">
-          <svg viewBox="0 0 1200 200" className="w-full h-full" preserveAspectRatio="none">
-            {WAVEFORM_BARS.map((b, i) => (
-              <rect key={i} x={b.x} y={b.y} width={10} height={b.h} fill="black" />
-            ))}
-          </svg>
+          <a
+            href="#prizes"
+            className="pill-btn pill-btn-outline text-xs py-2.5 px-6 shrink-0"
+          >
+            READ MORE
+          </a>
         </div>
 
-        {/* ── Header ────────────────────────────────────────────────── */}
-        <div className="relative z-10 pt-7 pb-3 px-8 shrink-0">
-          <p
-            className="text-sm uppercase tracking-[0.3em] font-bold mb-1 border-4 border-black inline-block px-3 py-0.5 bg-white shadow-[4px_4px_0_0_#000]"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            Minutes Listened
-          </p>
-          <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter uppercase leading-none"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            24 Hours of{" "}
-            <span className="text-flat-yellow [-webkit-text-stroke:2px_black]">
-              Pure Code
-            </span>
-          </h2>
-        </div>
-
-        {/* ── Card stage — pops in from left/right ──────────────────── */}
-        <div className="relative z-10 flex-1 flex items-center justify-center px-6">
+        {/* Center Event Card Stage */}
+        <div className="relative z-10 max-w-2xl mx-auto w-full my-auto flex items-center justify-center">
           <div
             ref={cardRef}
             key={activeIndex}
-            className="w-full max-w-md border-4 border-black shadow-[10px_10px_0_0_#000] overflow-hidden relative"
-            style={{ backgroundColor: accent.bg }}
+            className="w-full rounded-2xl overflow-hidden shadow-2xl relative p-8 md:p-10"
+            style={{
+              backgroundColor: accent,
+              border: "2px solid #000",
+            }}
           >
-            {/* Decorative large number */}
-            <div
-              className="absolute top-0 right-2 text-[8rem] font-black leading-none opacity-10 select-none pointer-events-none"
-              style={{ fontFamily: "var(--font-display)", color: accent.text }}
-              aria-hidden
-            >
-              {String(activeIndex + 1).padStart(2, "0")}
-            </div>
-
-            <div className="relative p-8">
-              <div className="text-5xl mb-4">{icon}</div>
-              <div
-                className="text-6xl md:text-7xl font-black tracking-tighter leading-none mb-2"
-                style={{ fontFamily: "var(--font-display)", color: accent.text }}
-              >
-                {event.time}
-              </div>
-              <div
-                className="text-xl font-bold leading-snug"
-                style={{ color: accent.text, fontFamily: "var(--font-body)" }}
-              >
-                {event.label}
-              </div>
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-4xl">{icon}</span>
               <span
-                className="inline-block mt-4 text-sm font-black uppercase px-3 py-1 bg-black text-white border-2 border-black"
+                className="text-xs font-black uppercase tracking-widest px-3 py-1 bg-black text-white rounded-full"
                 style={{ fontFamily: "var(--font-body)" }}
               >
-                Day {event.day}
+                Day {event.day} • Event {activeIndex + 1} of {TOTAL}
               </span>
+            </div>
+
+            <div
+              className="text-5xl sm:text-7xl font-black text-black tracking-tighter mb-3 leading-none"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {event.time}
+            </div>
+
+            <div
+              className="text-2xl sm:text-3xl font-extrabold text-black leading-snug"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {event.label}
             </div>
           </div>
         </div>
 
-        {/* ── Bottom: Arc Rail + Info Box ──────────────────────────── */}
-        <div className="relative z-10 px-6 pb-5 shrink-0 flex flex-col items-center">
-          
-          {/* ── Curved Arc Timeline ── */}
-          <div className="relative w-full max-w-2xl h-24 sm:h-32 mb-4 overflow-hidden">
-            {/* The curved line */}
-            <div 
-              className="absolute top-10 left-[-20%] w-[140%] h-[1000px] rounded-[50%] border-t-[4px] border-black/20"
+        {/* Bottom Progress Bar */}
+        <div className="relative z-10 max-w-2xl mx-auto w-full">
+          <div className="w-full bg-black/10 h-2 rounded-full overflow-hidden mb-2">
+            <div
+              className="h-full bg-black transition-all duration-300"
+              style={{ width: `${((activeIndex + 1) / TOTAL) * 100}%` }}
             />
-            {/* An active glowing part over the top */}
-            <div 
-              className="absolute top-10 left-[-20%] w-[140%] h-[1000px] rounded-[50%] border-t-[4px] border-flat-green/80 shadow-[0_0_15px_#1ED760]"
-              style={{ clipPath: 'polygon(30% 0, 70% 0, 70% 10%, 30% 10%)' }}
-            />
-
-            {/* Previous Event Pill */}
-            {prevEvent && (
-              <div className="absolute left-[10%] sm:left-[15%] top-[70%] -translate-y-1/2 -rotate-12 transition-all duration-300">
-                <span 
-                  className="px-3 py-1 rounded-full bg-flat-green text-black font-bold border-2 border-black text-xs sm:text-sm uppercase shadow-[2px_2px_0_0_#000]"
-                  style={{ fontFamily: "var(--font-body)" }}
-                >
-                  {prevEvent.time}
-                </span>
-              </div>
-            )}
-
-            {/* Current Event Pill (Top Center) */}
-            <div className="absolute left-1/2 top-10 -translate-x-1/2 -translate-y-1/2 z-10 transition-all duration-300">
-              <span 
-                className="px-6 py-1.5 rounded-full bg-white text-black font-black border-[3px] border-black text-sm sm:text-lg uppercase shadow-[4px_4px_0_0_#000]"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {event.time}
-              </span>
-            </div>
-
-            {/* Next Event Pill */}
-            {nextEvent && (
-              <div className="absolute right-[10%] sm:right-[15%] top-[70%] -translate-y-1/2 rotate-12 transition-all duration-300">
-                <span 
-                  className="px-3 py-1 rounded-full bg-flat-green text-black font-bold border-2 border-black text-xs sm:text-sm uppercase shadow-[2px_2px_0_0_#000]"
-                  style={{ fontFamily: "var(--font-body)" }}
-                >
-                  {nextEvent.time}
-                </span>
-              </div>
-            )}
           </div>
-
-          {/* Info text box */}
-          <div
-            className="border-4 border-black shadow-[6px_6px_0_0_#000] bg-white p-4 flex items-center gap-5 w-full max-w-2xl"
-          >
-            <span className="text-4xl shrink-0">{icon}</span>
-            <div className="flex-1 min-w-0">
-              <p
-                className="text-xs font-black uppercase tracking-widest text-black/40 mb-0.5"
-                style={{ fontFamily: "var(--font-body)" }}
-              >
-                Day {event.day} · Event {activeIndex + 1} of {TOTAL}
-              </p>
-              <p
-                className="text-xl font-black leading-tight"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {event.time}
-                <span
-                  className="ml-3 text-base font-bold text-black/70"
-                  style={{ fontFamily: "var(--font-body)" }}
-                >
-                  {event.label}
-                </span>
-              </p>
-            </div>
-            <p
-              className="shrink-0 text-xs font-bold text-black/40 uppercase tracking-widest hidden sm:block"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              scroll ↓
-            </p>
+          <div className="flex items-center justify-between text-xs font-bold text-black/50 uppercase tracking-widest">
+            <span>{event.label}</span>
+            <span>Scroll for Next Event ({activeIndex + 1}/{TOTAL}) ↓</span>
           </div>
         </div>
       </div>

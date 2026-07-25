@@ -56,7 +56,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className="min-h-full flex flex-col bg-spotify-black text-spotify-white font-sans"
+        className="min-h-full flex flex-col"
+        style={{
+          backgroundColor: "var(--wrapped-dark)",
+          color: "var(--wrapped-cream)",
+          fontFamily: "var(--font-body)",
+        }}
         suppressHydrationWarning
       >
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
