@@ -4,7 +4,7 @@ import { useRef, useEffect } from "react";
 import { ExternalLink, ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { VerticalBars } from "@/components/ui/DecorativePatterns";
+import { VerticalBars, ConcentricCircles, CheckeredPattern, DotGrid } from "@/components/ui/DecorativePatterns";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -126,6 +126,21 @@ export default function Outro() {
 
       </div>
 
+      {/* Decorative: Concentric Circles — top right */}
+      <div className="absolute -top-[20%] -right-[10%] w-[50vw] h-[50vw] md:w-[35vw] md:h-[35vw] opacity-[0.05] pointer-events-none">
+        <ConcentricCircles size={700} rings={11} baseColor="#FF4632" altColor="#0B0B0B" highlightRing={3} highlightColor="#1DB954" />
+      </div>
+
+      {/* Decorative: Warped Checkered — bottom left */}
+      <div className="absolute -bottom-[8%] -left-[5%] opacity-[0.04] pointer-events-none rotate-[-6deg]">
+        <CheckeredPattern cols={7} rows={10} size={40} color1="#1DB954" color2="transparent" warp />
+      </div>
+
+      {/* Decorative: Dot Grid — left edge */}
+      <div className="absolute top-[30%] left-6 opacity-[0.06] pointer-events-none hidden md:block">
+        <DotGrid rows={8} cols={2} dotSize={10} gap={12} color="#FFFFFF" />
+      </div>
+
       {/* HERO */}
 
       <div
@@ -141,7 +156,7 @@ export default function Outro() {
             flex
             items-center
             justify-center
-            text-[24vw]
+            text-[23vw]
             font-black
             uppercase
             text-black/10
@@ -178,20 +193,19 @@ export default function Outro() {
               md:text-[10rem]
               leading-none
               font-black
-              tracking-[-0.08em]
+              tracking-[-0.06em]
               uppercase
               text-black
+              transition-all duration-300
+              [-webkit-text-stroke:2px_transparent]
+              hover:text-[#EBE6DF]
+              hover:[-webkit-text-stroke:2px_black]
             "
           >
             REGISTER
             <br />
             NOW
           </h2>
-
-          <p className="mt-8 max-w-2xl mx-auto text-xl text-black/80">
-            Join Mumbai's biggest 24-hour offline hackathon.
-            Build. Innovate. Win ₹60,000+ in prizes.
-          </p>
 
           <a
             href="#"
@@ -250,7 +264,7 @@ export default function Outro() {
 
       </div>
 
-     </section>
-       
-        );
+    </section>
+
+  );
 }

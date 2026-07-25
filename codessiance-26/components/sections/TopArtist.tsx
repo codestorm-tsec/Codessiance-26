@@ -4,6 +4,7 @@ import { useRef, useEffect } from "react";
 import { Trophy, Medal, Award, Sparkles } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { CheckeredPattern, ConcentricCircles, VerticalBars } from "@/components/ui/DecorativePatterns";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -61,6 +62,21 @@ export default function TopArtist() {
       className="section-light grain-overlay relative overflow-hidden py-24 md:py-36"
       style={{ backgroundColor: "#EBE6DF" }}
     >
+      {/* Decorative: Warped Checkered — top left */}
+      <div className="absolute -top-[5%] -left-[8%] opacity-[0.06] pointer-events-none scale-125 rotate-[-8deg]">
+        <CheckeredPattern cols={8} rows={12} size={50} color1="#C8A200" color2="transparent" warp />
+      </div>
+
+      {/* Decorative: Concentric Circles — bottom right */}
+      <div className="absolute -bottom-[25%] -right-[20%] w-[50vw] h-[50vw] md:w-[35vw] md:h-[35vw] opacity-[0.06] pointer-events-none">
+        <ConcentricCircles size={700} rings={10} baseColor="#C8A200" altColor="#EBE6DF" highlightRing={2} highlightColor="#1DB954" />
+      </div>
+
+      {/* Decorative: Vertical Bars — right edge */}
+      <div className="absolute top-1/2 -translate-y-1/2 right-6 opacity-10 pointer-events-none hidden lg:block rotate-90">
+        <VerticalBars bars={4} color="#1A1A1A" className="h-20" />
+      </div>
+
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         
         {/* Editorial Feature Header matching Spotify Section 3 */}

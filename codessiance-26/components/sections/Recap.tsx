@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import { FAQ_ITEMS } from "@/lib/constants";
 import { Sparkles } from "lucide-react";
+import { ConcentricCircles, CheckeredPattern, DotGrid } from "@/components/ui/DecorativePatterns";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -113,6 +114,21 @@ export default function Recap() {
 
         <div className="blob3 absolute bottom-[-250px] left-1/2 h-[650px] w-[650px] -translate-x-1/2 rounded-full bg-[#1DB954]/10 blur-[180px]" />
 
+      </div>
+
+      {/* Decorative: Concentric Circles — top right */}
+      <div className="absolute -top-[15%] -right-[15%] w-[45vw] h-[45vw] md:w-[30vw] md:h-[30vw] opacity-[0.04] pointer-events-none">
+        <ConcentricCircles size={600} rings={10} baseColor="#1DB954" altColor="#0A0A0A" highlightRing={2} highlightColor="#7357FF" />
+      </div>
+
+      {/* Decorative: Warped Checkered — bottom left */}
+      <div className="absolute -bottom-[10%] -left-[5%] opacity-[0.03] pointer-events-none rotate-[12deg] scale-110">
+        <CheckeredPattern cols={6} rows={10} size={45} color1="#8B7CFF" color2="transparent" warp />
+      </div>
+
+      {/* Decorative: Dot Grid — mid right */}
+      <div className="absolute top-1/2 -translate-y-1/2 right-8 opacity-[0.06] pointer-events-none hidden lg:block">
+        <DotGrid rows={6} cols={3} dotSize={12} gap={14} color="#1DB954" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6">

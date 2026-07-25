@@ -45,7 +45,7 @@ export default function Hero() {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative overflow-hidden bg-[#EBE6DF] min-h-[90vh] flex items-center justify-center py-12 md:py-20"
+      className="relative z-20 overflow-visible bg-[#EBE6DF] min-h-[90vh] flex items-center justify-center py-12 md:py-20"
     >
       {/* Figma Pattern 1: Concentric Circles (Green Highlight) */}
       <div
@@ -68,8 +68,7 @@ export default function Hero() {
         <CheckeredPattern cols={10} rows={10} size={50} color1="#1A1A1A" color2="transparent" warp={true} />
       </div>
 
-      {/* Gradient fade to flow seamlessly into the Intro section */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#EBE6DF] z-10 pointer-events-none" />
+
 
       {/* Main Hero Content */}
       <div

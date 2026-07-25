@@ -3,7 +3,7 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { DotGrid, WavyStripes } from "@/components/ui/DecorativePatterns";
+import { DotGrid, WavyStripes, ConcentricCircles, CheckeredPattern, VerticalBars } from "@/components/ui/DecorativePatterns";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -70,6 +70,20 @@ export default function Intro() {
       className="section-light grain-overlay relative pt-16 pb-28 md:pt-24 md:pb-36 overflow-visible"
       style={{ backgroundColor: "#EBE6DF" }}
     >
+      {/* Decorative: Concentric Circles — mid right, flowing from Hero */}
+      <div className="absolute -top-[10%] -right-[20%] w-[70vw] h-[70vw] md:w-[45vw] md:h-[45vw] opacity-[0.05] pointer-events-none">
+        <ConcentricCircles size={900} rings={12} baseColor="#1DB954" altColor="#EBE6DF" highlightRing={5} highlightColor="#8B7CFF" />
+      </div>
+
+      {/* Decorative: Warped Checkered — bottom left */}
+      <div className="absolute -bottom-[5%] -left-[8%] opacity-[0.04] pointer-events-none rotate-[6deg] hidden md:block">
+        <CheckeredPattern cols={6} rows={8} size={45} color1="#C8A200" color2="transparent" warp />
+      </div>
+
+      {/* Decorative: Vertical Bars — right edge */}
+      <div className="absolute bottom-[20%] right-8 opacity-[0.08] pointer-events-none hidden lg:block">
+        <VerticalBars bars={4} color="#1A1A1A" className="h-24" />
+      </div>
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           

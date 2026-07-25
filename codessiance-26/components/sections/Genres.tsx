@@ -5,7 +5,7 @@ import { Globe, Brain, Factory } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DOMAINS } from "@/lib/constants";
-import { DotGrid, LineScribble } from "@/components/ui/DecorativePatterns";
+import { DotGrid, LineScribble, ConcentricCircles, CheckeredPattern, VerticalBars } from "@/components/ui/DecorativePatterns";
 import { TopGenresCard } from "@/components/ui/WrappedStoryCard";
 
 if (typeof window !== "undefined") {
@@ -72,6 +72,21 @@ export default function Genres() {
       {/* Scribble on bottom left */}
       <div className="absolute bottom-6 left-6 pointer-events-none opacity-20">
         <LineScribble className="w-64 h-64" color="#FFFFFF" />
+      </div>
+
+      {/* Decorative: Concentric Circles — bottom right */}
+      <div className="absolute -bottom-[25%] -right-[15%] w-[55vw] h-[55vw] md:w-[35vw] md:h-[35vw] opacity-[0.04] pointer-events-none">
+        <ConcentricCircles size={700} rings={10} baseColor="#8B7CFF" altColor="#1A1A1A" highlightRing={3} highlightColor="#1DB954" />
+      </div>
+
+      {/* Decorative: Warped Checkered — top left */}
+      <div className="absolute -top-[8%] -left-[5%] opacity-[0.03] pointer-events-none rotate-[-10deg] hidden md:block">
+        <CheckeredPattern cols={5} rows={8} size={40} color1="#1DB954" color2="transparent" warp />
+      </div>
+
+      {/* Decorative: Vertical Bars — right edge */}
+      <div className="absolute top-[60%] right-6 opacity-[0.06] pointer-events-none hidden lg:block">
+        <VerticalBars bars={3} color="#FFFFFF" className="h-20" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">

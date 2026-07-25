@@ -4,7 +4,7 @@ import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SPONSORS } from "@/lib/constants";
-import { CheckeredPattern } from "@/components/ui/DecorativePatterns";
+import { CheckeredPattern, ConcentricCircles, VerticalBars } from "@/components/ui/DecorativePatterns";
 import { ClubFavouriteCard } from "@/components/ui/WrappedStoryCard";
 
 if (typeof window !== "undefined") {
@@ -60,6 +60,16 @@ export default function InRotation() {
       {/* Checkered pattern background */}
       <div className="absolute bottom-0 left-0 pointer-events-none opacity-20">
         <CheckeredPattern cols={12} rows={4} size={30} color1="#FFFFFF" color2="transparent" warp />
+      </div>
+
+      {/* Decorative: Concentric Circles — top right */}
+      <div className="absolute -top-[20%] -right-[15%] w-[55vw] h-[55vw] md:w-[35vw] md:h-[35vw] opacity-[0.05] pointer-events-none">
+        <ConcentricCircles size={700} rings={10} baseColor="#1DB954" altColor="#1A1A1A" highlightRing={4} highlightColor="#8B7CFF" />
+      </div>
+
+      {/* Decorative: Vertical Bars — left edge */}
+      <div className="absolute top-[40%] left-6 opacity-[0.08] pointer-events-none hidden md:block">
+        <VerticalBars bars={3} color="#FFFFFF" className="h-24" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">

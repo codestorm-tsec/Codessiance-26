@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TIMELINE_EVENTS } from "@/lib/constants";
+import { ConcentricCircles, VerticalBars, DotGrid } from "@/components/ui/DecorativePatterns";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -16,11 +17,11 @@ const ACCENT_COLORS = [
 ];
 
 const EVENT_ICONS: Record<string, string> = {
-  reporting: "🎟️",
+  reporting: "📝",
   inauguration: "🎤",
-  "hack-start": "💻",
+  "hack-start": "🚀",
   lunch: "🍕",
-  mentoring: "🧑‍💻",
+  mentoring: "💡",
   dinner: "🌙",
   "judging-internal": "⚖️",
   shortlist: "📋",
@@ -49,7 +50,7 @@ export default function Timeline() {
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: sectionRef.current,
-        start: "top top+=64", // Pin right below 64px HeaderNav
+        start: "top top", // Pin exactly at the top of the viewport
         end: `+=${TOTAL * 400}`, // Scroll distance for cycling all timeline cards
         pin: pinTargetRef.current,
         pinSpacing: true,
@@ -75,11 +76,35 @@ export default function Timeline() {
       className="relative section-light grain-overlay"
       style={{ backgroundColor: "#EBE6DF" }}
     >
+      {/* Decorative: Concentric Circles bottom-right */}
+      <div className="absolute -bottom-[20%] -right-[15%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] opacity-[0.07] pointer-events-none">
+        <ConcentricCircles size={800} rings={12} baseColor="#1DB954" altColor="#EBE6DF" highlightRing={3} highlightColor="#8B7CFF" />
+      </div>
+
+      {/* Decorative: Vertical Bars top-left */}
+      <div className="absolute top-12 left-8 opacity-15 pointer-events-none hidden md:block">
+        <VerticalBars bars={5} color="#1A1A1A" className="h-28" />
+      </div>
+
+      {/* Decorative: Dot Grid bottom-left */}
+      <div className="absolute bottom-8 left-12 opacity-10 pointer-events-none hidden lg:block">
+        <DotGrid rows={3} cols={5} dotSize={16} gap={10} color="#1A1A1A" />
+      </div>
+
       {/* Pinned Stage Container */}
       <div
         ref={pinTargetRef}
-        className="w-full h-[calc(100vh-4rem)] flex flex-col justify-between pt-6 pb-8 px-6 md:px-12"
+        className="w-full h-screen flex flex-col justify-between pt-6 pb-8 px-6 md:px-12 relative"
       >
+        {/* Decorative: 2026 Vertical Image */}
+        <div className="absolute top-[40vh] right-20 translate-x-[50%] md:translate-x-[45%] opacity-80 pointer-events-none hidden lg:block mix-blend-multiply z-0">
+          <img
+            src="/2026.png"
+            alt="2026"
+            className="w-auto h-[25vh] md:h-[30vh] object-contain -rotate-90"
+          />
+        </div>
+
         {/* Top Header */}
         <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
@@ -89,9 +114,6 @@ export default function Timeline() {
             >
               The <strong className="font-black text-black">Top Lists</strong> of 2026
             </h2>
-            <p className="mt-1 text-sm md:text-base font-bold text-black/60">
-              24 Hours of Non-stop Innovation & Code
-            </p>
           </div>
 
           <a
@@ -107,34 +129,48 @@ export default function Timeline() {
           <div
             ref={cardRef}
             key={activeIndex}
-            className="w-full rounded-2xl overflow-hidden shadow-2xl relative p-8 md:p-10"
+            className="w-[85%] max-w-[420px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl relative"
             style={{
-              backgroundColor: accent,
               border: "2px solid #000",
             }}
           >
-            <div className="flex items-center justify-between mb-6">
-              <span className="text-4xl">{icon}</span>
-              <span
-                className="text-xs font-black uppercase tracking-widest px-3 py-1 bg-black text-white rounded-full"
-                style={{ fontFamily: "var(--font-body)" }}
-              >
-                Day {event.day} • Event {activeIndex + 1} of {TOTAL}
-              </span>
-            </div>
+            {/* Background Image */}
+            <img
+              src={`/timelinecards/card${(activeIndex % 6) + 1}.png`}
+              alt="Timeline Background"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
 
-            <div
-              className="text-5xl sm:text-7xl font-black text-black tracking-tighter mb-3 leading-none"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {event.time}
-            </div>
+            {/* Inner Content Overlay */}
+            <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between z-10">
+              {/* Top Row: Icon + Day Badge */}
+              <div className="flex items-start justify-end">
 
-            <div
-              className="text-2xl sm:text-3xl font-extrabold text-black leading-snug"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              {event.label}
+              </div>
+
+              {/* Event Time (Positioned in the colored stripe) */}
+              <div className="absolute bottom-[34%] left-0 w-full px-6 md:px-8 text-center">
+                <div
+                  className="text-5xl sm:text-5xl md:text-7xl font-bold tracking-tighter leading-none"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "#EAE5DE",
+                    WebkitTextStroke: "1.5px black",
+                  }}
+                >
+                  {event.time}
+                </div>
+              </div>
+
+              {/* Event Label (Positioned in the black bottom area) */}
+              <div className="absolute bottom-[16%] translate-y-[50%] left-0 w-full px-6 text-white text-center">
+                <div
+                  className="text-lg sm:text-xl md:text-5xl font-bold uppercase tracking-wide"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {event.label}
+                </div>
+              </div>
             </div>
           </div>
         </div>
