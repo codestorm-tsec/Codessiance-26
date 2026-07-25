@@ -2,21 +2,42 @@
 
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
-import { CheckeredPattern, LineScribble } from "@/components/ui/DecorativePatterns";
+import { CheckeredPattern, ConcentricCircles, DotGrid } from "@/components/ui/DecorativePatterns";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const pattern1Ref = useRef<HTMLDivElement>(null);
+  const pattern2Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Entrance
       gsap.fromTo(
         containerRef.current,
-        { opacity: 0, scale: 0.96 },
-        { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" }
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" }
       );
-    }, sectionRef);
 
+      // Rotate Concentric Circles
+      gsap.to(pattern1Ref.current, {
+        rotation: 360,
+        duration: 40,
+        ease: "linear",
+        repeat: -1,
+      });
+
+      // Subtle float for Dot Grid
+      gsap.to(pattern2Ref.current, {
+        y: -30,
+        x: 20,
+        duration: 5,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+
+    }, sectionRef);
     return () => ctx.revert();
   }, []);
 
@@ -24,68 +45,81 @@ export default function Hero() {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative overflow-hidden section-light grain-overlay min-h-[85vh] flex items-center justify-center py-12 md:py-20"
-      style={{ backgroundColor: "#EBE6DF" }}
+      className="relative overflow-hidden bg-[#EBE6DF] min-h-[90vh] flex items-center justify-center py-12 md:py-20"
     >
-      {/* Background line-art flower (top right) */}
-      <div className="absolute -top-10 -right-10 pointer-events-none opacity-40 md:opacity-60">
-        <LineScribble className="w-80 h-80 md:w-[32rem] md:h-[32rem]" color="#1A1A1A" />
+      {/* Figma Pattern 1: Concentric Circles (Green Highlight) */}
+      <div
+        ref={pattern1Ref}
+        className="absolute -top-[30%] -left-[10%] w-[150vw] h-[150vw] md:w-[70vw] md:h-[70vw] opacity-90 pointer-events-none flex justify-center items-center"
+      >
+        <ConcentricCircles size={1200} rings={14} baseColor="#1A1A1A" altColor="#EBE6DF" highlightRing={4} highlightColor="#1DB954" />
       </div>
 
-      {/* Background checkered pattern (center right) */}
-      <div className="absolute top-1/2 -right-16 -translate-y-1/2 pointer-events-none opacity-25 hidden sm:block">
-        <CheckeredPattern cols={10} rows={10} size={36} color1="#000" color2="transparent" warp />
+      {/* Figma Pattern 2: Polka Dots */}
+      <div
+        ref={pattern2Ref}
+        className="absolute -bottom-[5%] -right-[5%] opacity-80 pointer-events-none mix-blend-multiply hidden md:block"
+      >
+        <DotGrid rows={8} cols={14} dotSize={28} gap={16} color="#1A1A1A" />
       </div>
 
-      {/* Main Hero Visual Graphic Container */}
+      {/* Figma Pattern 3: Warped Checkered (Top Right) */}
+      <div className="absolute top-[5%] -right-[5%] opacity-15 pointer-events-none mix-blend-multiply scale-150">
+        <CheckeredPattern cols={10} rows={10} size={50} color1="#1A1A1A" color2="transparent" warp={true} />
+      </div>
+
+      {/* Gradient fade to flow seamlessly into the Intro section */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#EBE6DF] z-10 pointer-events-none" />
+
+      {/* Main Hero Content */}
       <div
         ref={containerRef}
-        className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center opacity-0"
+        className="relative z-10 w-full max-w-7xl mx-auto px-4 flex flex-col items-center justify-center opacity-0"
       >
         <div className="relative w-full flex flex-col items-center justify-center">
-          
-          {/* Green cursive looping '26 text behind & over */}
+
+          {/* Huge Background '2026' */}
           <div
-            className="absolute -top-12 md:-top-24 left-1/2 -translate-x-1/2 pointer-events-none select-none z-0"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0 mix-blend-exclusion"
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(12rem, 30vw, 26rem)",
+              fontSize: "clamp(8rem, 30vw, 26rem)",
               fontWeight: "900",
-              color: "transparent",
-              WebkitTextStroke: "6px #1DB954",
+              color: "#F0EDEA",
               lineHeight: 0.8,
-              transform: "rotate(-4deg)",
             }}
           >
             2026
           </div>
 
-          {/* Black block with white text: CODESSIANCE */}
-          <div className="relative z-10 my-16 md:my-24 w-full flex justify-center">
-            <div className="bg-black text-white px-6 sm:px-12 md:px-20 py-4 sm:py-6 md:py-8 shadow-2xl inline-block text-center max-w-full overflow-hidden">
-              <h1
-                className="text-5xl sm:text-7xl md:text-8xl lg:text-[9.5rem] font-black uppercase tracking-tighter leading-none"
-                style={{
-                  fontFamily: "var(--font-display)",
-                  color: "#F0EDEA",
-                  letterSpacing: "-0.04em",
-                }}
-              >
-                Codessiance
-              </h1>
+          {/* Main Title Block */}
+          <div className="relative z-10 my-16 md:my-24 w-full flex justify-center perspective-1000">
+            <div className="group relative">
+              <div className="relative bg-[#1A1A1A] border-4 border-[#1DB954] text-[#F0EDEA] px-8 sm:px-14 md:px-24 py-8 sm:py-12 shadow-[12px_12px_0px_0px_rgba(29,185,84,1)] overflow-hidden transition-transform hover:-translate-y-2 hover:-translate-x-2">
+                <h1
+                  className="relative z-10 text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter leading-none"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  Codeissance
+                </h1>
+              </div>
             </div>
           </div>
 
-          {/* Green cursive overlay text '26 in foreground */}
+          {/* Bold 26 Overlay */}
           <div
-            className="absolute -bottom-8 md:-bottom-16 left-1/2 -translate-x-1/2 pointer-events-none select-none z-20"
+            className="absolute -bottom-8 md:-bottom-16 right-[5%] md:right-[15%] pointer-events-none select-none z-20 transform rotate-[-4deg]"
             style={{
               fontFamily: "var(--font-display)",
               fontSize: "clamp(6rem, 16vw, 14rem)",
               fontWeight: "900",
-              color: "#1DB954",
+              color: "#FF4632",
               lineHeight: 0.8,
-              textShadow: "0 4px 20px rgba(0,0,0,0.15)",
+              WebkitTextStroke: "4px #1A1A1A",
+              textShadow: "6px 6px 0px #1A1A1A"
             }}
           >
             &apos;26
@@ -93,13 +127,16 @@ export default function Hero() {
         </div>
 
         {/* Subtitle tag */}
-        <div className="mt-20 md:mt-24 text-center z-20">
-          <p
-            className="text-base sm:text-lg md:text-xl font-bold uppercase tracking-[0.2em]"
-            style={{ fontFamily: "var(--font-body)", color: "#1A1A1A" }}
-          >
-            TSEC CodeStorm • 24-Hour Offline Hackathon
-          </p>
+        <div className="mt-16 md:mt-24 text-center z-20">
+          <div className="inline-flex items-center gap-4 px-6 sm:px-8 py-3 sm:py-4 bg-[#1A1A1A] shadow-[8px_8px_0px_0px_rgba(255,70,50,1)] hover:-translate-y-1 transition-transform border border-transparent">
+            <span className="w-3 h-3 rounded-full bg-[#1DB954] animate-pulse"></span>
+            <p
+              className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-[0.25em] text-[#F0EDEA]"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              TSEC CodeStorm • 24-Hour Offline Hackathon
+            </p>
+          </div>
         </div>
       </div>
     </section>

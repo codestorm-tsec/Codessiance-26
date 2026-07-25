@@ -7,6 +7,7 @@ import TopArtist from "@/components/sections/TopArtist";
 import InRotation from "@/components/sections/InRotation";
 import Recap from "@/components/sections/Recap";
 import Outro from "@/components/sections/Outro";
+import Footer from "@/components/sections/Footer";
 import Loader from "@/components/loader/Loader";
 
 /**
@@ -17,7 +18,6 @@ export default function Home() {
   return (
     <>
       <Loader />
-      <HeaderNav />
       <main>
         <Hero />
         <Intro />
@@ -27,6 +27,7 @@ export default function Home() {
         <InRotation />
         <Recap />
         <Outro />
+        <Footer />
       </main>
     </>
   );

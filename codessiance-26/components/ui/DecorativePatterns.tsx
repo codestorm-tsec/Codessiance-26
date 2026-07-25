@@ -211,3 +211,53 @@ export function VerticalBars({
     </svg>
   );
 }
+
+export function ConcentricCircles({
+  className = "",
+  size = 400,
+  rings = 10,
+  baseColor = "#1A1A1A",
+  altColor = "#F0EDEA",
+  highlightRing = -1,
+  highlightColor = "#1DB954",
+}: {
+  className?: string;
+  size?: number;
+  rings?: number;
+  baseColor?: string;
+  altColor?: string;
+  highlightRing?: number;
+  highlightColor?: string;
+}) {
+  const circles = [];
+  const maxRadius = size / 2;
+  const thickness = maxRadius / rings;
+  
+  for (let i = 0; i < rings; i++) {
+    const isHighlight = i === highlightRing;
+    const isAlt = i % 2 !== 0;
+    const r = maxRadius - (i * thickness);
+    circles.push(
+      <circle
+        key={i}
+        cx={maxRadius}
+        cy={maxRadius}
+        r={r}
+        fill={isHighlight ? highlightColor : (isAlt ? altColor : baseColor)}
+      />
+    );
+  }
+
+  return (
+    <svg
+      className={className}
+      viewBox={`0 0 ${size} ${size}`}
+      width="100%"
+      height="100%"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      {circles}
+    </svg>
+  );
+}

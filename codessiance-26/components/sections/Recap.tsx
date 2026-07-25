@@ -159,7 +159,7 @@ export default function Recap() {
           ref={faqRef}
           className="mx-auto max-w-5xl space-y-6"
         ></div>
-                  <Accordion type="single" collapsible className="space-y-6">
+          <Accordion className="space-y-6">
             {FAQ_ITEMS.map((item, index) => (
               <AccordionItem
                 key={item.id}

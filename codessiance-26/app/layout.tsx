@@ -16,6 +16,28 @@ const spotifyMixUltra = localFont({
 });
 
 /**
+ * Extrabold font: Spotify Mix Extrabold
+ */
+const spotifyMixExtrabold = localFont({
+  src: "../font/SpotifyMix-Extrabold.woff2",
+  weight: "800",
+  style: "normal",
+  variable: "--font-extrabold",
+  display: "swap",
+});
+
+/**
+ * Black font: Spotify Mix Black
+ */
+const spotifyMixBlack = localFont({
+  src: "../font/SpotifyMix-Black.woff2",
+  weight: "900",
+  style: "normal",
+  variable: "--font-black",
+  display: "swap",
+});
+
+/**
  * Body font: Spotify Mix
  * Clean, readable body text and UI elements.
  */
@@ -52,7 +74,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spotifyMixUltra.variable} ${spotifyMix.variable} h-full antialiased`}
+      className={`${spotifyMixUltra.variable} ${spotifyMixExtrabold.variable} ${spotifyMix.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body
