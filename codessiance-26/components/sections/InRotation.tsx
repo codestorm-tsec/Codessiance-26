@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SPONSORS } from "@/lib/constants";
 import { CheckeredPattern, ConcentricCircles, VerticalBars } from "@/components/ui/DecorativePatterns";
-import { ClubFavouriteCard } from "@/components/ui/WrappedStoryCard";
+import LogoLoop from "@/components/LogoLoop";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -30,16 +30,14 @@ export default function InRotation() {
         }
       );
 
-      const items = gridRef.current?.querySelectorAll(".sponsor-card");
-      if (items) {
+      if (gridRef.current) {
         gsap.fromTo(
-          items,
+          gridRef.current,
           { opacity: 0, y: 50 },
           {
             opacity: 1,
             y: 0,
             duration: 0.8,
-            stagger: 0.1,
             ease: "power3.out",
             scrollTrigger: { trigger: gridRef.current, start: "top 75%" },
           }
@@ -93,40 +91,20 @@ export default function InRotation() {
           </div>
         </div>
 
-        {/* Content Layout: Sponsors + Figma Club Card */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* Sponsor Grid (7 cols) */}
-          <div ref={gridRef} className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {SPONSORS.map((sponsor) => (
-              <div
-                key={sponsor.id}
-                className="sponsor-card flex items-center justify-center rounded-xl p-6 opacity-0 transition-all duration-300 hover:scale-[1.03] cursor-pointer"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  minHeight: "110px",
-                }}
-              >
-                <span
-                  className="text-sm font-black text-white uppercase text-center tracking-tight"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {sponsor.name}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Figma Wrapped Club Favourite Story Card (5 cols) */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end">
-            <ClubFavouriteCard
-              percentage="12%"
-              title="You're in great company."
-              subtitle="of global hackers are in your club."
-              items={["AI / ML", "Fullstack", "Web3", "Cloud DevOps"]}
-            />
-          </div>
+        {/* Content Layout: Sponsors Full Width */}
+        <div ref={gridRef} className="w-full overflow-hidden py-10 opacity-0">
+          <LogoLoop
+            logos={[
+              { src: "/sponsors/sponsor-1.svg", alt: "Sponsor 1" },
+              { src: "/sponsors/sponsor-2.svg", alt: "Sponsor 2" },
+              { src: "/sponsors/sponsor-3.svg", alt: "Sponsor 3" },
+              { src: "/sponsors/sponsor-4.svg", alt: "Sponsor 4" }
+            ]}
+            speed={50}
+            direction="left"
+            logoHeight={100}
+            gap={32}
+          />
         </div>
       </div>
     </section>

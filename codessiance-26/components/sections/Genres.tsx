@@ -1,17 +1,19 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import {
   Globe,
   Brain,
   Factory,
   Users,
   Trophy,
-  Play,
   Headphones,
+  X,
+  Play,
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 
 import { DOMAINS } from "@/lib/constants";
 
@@ -25,318 +27,378 @@ const iconMap: Record<string, React.ElementType> = {
   Factory,
 };
 
-const cardColors = [
-  "bg-flat-yellow",
-  "bg-flat-pink",
-  "bg-flat-blue",
-];
+/* CD image per domain */
+const cdImages: Record<string, string> = {
+  "web-app": "/cd-web-app.png",
+  "ai-ml": "/cd-ai-ml.png",
+  industry: "/cd-industry.png",
+};
+
+/* Accent colors per domain */
+const domainAccents: Record<string, { bg: string; glow: string; text: string }> = {
+  "web-app": { bg: "#6C63FF", glow: "rgba(108,99,255,0.4)", text: "#C4BFFF" },
+  "ai-ml": { bg: "#FF6B9D", glow: "rgba(255,107,157,0.4)", text: "#FFB8D0" },
+  industry: { bg: "#1DB954", glow: "rgba(29,185,84,0.4)", text: "#7EE8A5" },
+};
 
 export default function Genres() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
+  const [activeDomain, setActiveDomain] = useState<string | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         headerRef.current,
-        {
-          opacity: 0,
-          y: 70,
-        },
+        { opacity: 0, y: 70 },
         {
           opacity: 1,
           y: 0,
           duration: 1,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 85%",
-          },
+          scrollTrigger: { trigger: headerRef.current, start: "top 85%" },
         }
       );
 
-      const cards =
-        cardsRef.current?.querySelectorAll(".genre-card");
-
+      const cards = cardsRef.current?.querySelectorAll(".cd-case");
       if (cards) {
         gsap.fromTo(
           cards,
-          {
-            opacity: 0,
-            y: 120,
-            scale: 0.85,
-            rotation: -5,
-          },
+          { opacity: 0, y: 100, scale: 0.85 },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            rotation: 0,
             duration: 0.9,
-            stagger: 0.18,
+            stagger: 0.2,
             ease: "back.out(1.4)",
-            scrollTrigger: {
-              trigger: cardsRef.current,
-              start: "top 80%",
-            },
+            scrollTrigger: { trigger: cardsRef.current, start: "top 80%" },
           }
         );
       }
-
-      gsap.to(".floatingBlob", {
-        y: 30,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        duration: 5,
-        stagger: 0.8,
-      });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
+  /* Lock body scroll when detail panel is open */
+  useEffect(() => {
+    if (activeDomain) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activeDomain]);
+
+  const activeDomainData = DOMAINS.find((d) => d.id === activeDomain);
+
   return (
     <section
       ref={sectionRef}
       id="genres"
-      className="relative overflow-hidden bg-flat-orange border-y-8 border-black py-24 md:py-32"
+      className="relative overflow-hidden py-24 md:py-36"
+      style={{ backgroundColor: "#000000" }}
     >
-      {/* Background Blobs */}
-
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
-        <div className="floatingBlob absolute -left-20 top-0 h-80 w-80 rounded-full bg-flat-pink opacity-25 blur-[120px]" />
-
-        <div className="floatingBlob absolute right-0 top-1/3 h-[30rem] w-[30rem] rounded-full bg-flat-blue opacity-20 blur-[140px]" />
-
-        <div className="floatingBlob absolute bottom-0 left-1/2 h-[24rem] w-[24rem] rounded-full bg-flat-yellow opacity-30 blur-[110px]" />
-
+      {/* Subtle background shimmer */}
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{
+            width: "140%",
+            height: "140%",
+            background:
+              "radial-gradient(ellipse at center, rgba(29,185,84,0.06) 0%, transparent 60%)",
+          }}
+        />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6">
-
         {/* Header */}
-
-        <div
-          ref={headerRef}
-          className="mb-24 text-center md:text-left opacity-0"
-        >
-
-          <div className="inline-flex items-center gap-3 rounded-full border-4 border-black bg-white px-6 py-3 shadow-[6px_6px_0_#000]">
-
-            <Headphones className="h-5 w-5" />
-
+        <div ref={headerRef} className="mb-24 text-center opacity-0 flex flex-col items-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#1DB954]/30 bg-[#1DB954]/10 px-5 py-2 mb-8">
+            <Headphones className="h-4 w-4 text-[#1DB954]" />
             <span
-              className="font-black uppercase tracking-[0.35em] text-black"
+              className="font-bold text-[#1DB954] text-sm tracking-wide"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              YOUR TOP GENRES
+              Curated for you
             </span>
-
           </div>
 
           <h2
-            className="mt-8 text-5xl md:text-6xl lg:text-7xl font-black uppercase leading-[0.9]"
+            className="text-5xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tight text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Pick Your
+            Find your
             <br />
-
+            <span className="relative inline-block italic text-transparent" style={{ WebkitTextStroke: "2px white", WebkitTextFillColor: "transparent" }}>
+              favourite
+            </span>{" "}
             <span className="relative inline-block">
-
-              Track
-
-              <span className="absolute bottom-2 left-0 -z-10 h-3 w-full rotate-[-2deg] bg-flat-green" />
-
+              track
+              <span
+                className="absolute -bottom-1 left-0 -z-10 h-4 w-full"
+                style={{ background: "#1DB954", transform: "rotate(-2deg)" }}
+              />
             </span>
-
           </h2>
 
           <p
-            className="mt-8 max-w-xl text-xl font-bold"
+            className="mt-10 mx-auto max-w-md text-base md:text-lg text-white/50 font-medium"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Every builder has a favorite genre.
-            Pick yours and create your next hit.
+            Every builder has a genre. Pick a CD below to discover your next big hit.
           </p>
-
         </div>
 
-        {/* Cards */}
-
+        {/* CD Cases Grid */}
         <div
           ref={cardsRef}
-          className="grid gap-10 md:grid-cols-2 lg:grid-cols-3"
+          className="grid gap-12 md:gap-16 grid-cols-1 md:grid-cols-3 justify-items-center"
         >
-
-          {DOMAINS.map((domain, idx) => {
-
-            const Icon = iconMap[domain.icon] || Globe;
-
-            const bg = cardColors[idx % 3];
-
-            const rotation =
-              idx % 3 === 0
-                ? "-rotate-2"
-                : idx % 3 === 1
-                ? "rotate-2"
-                : "-rotate-1";
-
+          {DOMAINS.map((domain) => {
+            const accent = domainAccents[domain.id];
             return (
-
-              <div
-                key={domain.id}
-                className={`
-                  genre-card
-                  group
-                  relative
-                  overflow-hidden
-                  rounded-[32px]
-                  border-[6px]
-                  border-black
-                  ${bg}
-                  ${rotation}
-                  p-8
-                  shadow-[14px_14px_0_#000]
-                  transition-all
-                  duration-500
-                  hover:-translate-y-4
-                  hover:rotate-0
-                  hover:scale-[1.03]
-                  hover:shadow-[8px_8px_0_#000]
-                  opacity-0
-                `}
-              >
-
-                {/* Shine */}
-
-                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-
-               
-                {/* Now Playing */}
-
-                <div className="absolute left-6 top-6 rounded-full border-2 border-black bg-black px-4 py-1 text-xs font-black uppercase tracking-[0.25em] text-white">
-
-                  NOW PLAYING
-
-                </div>
-
-                {/* Vinyl Record */}
-
-                <div className="mt-14 mb-8 flex justify-center md:justify-start">
-
-                  <div className="relative flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-black">
-
-                    <div className="absolute h-16 w-16 rounded-full border border-white/30" />
-
-                    <div className="absolute h-10 w-10 rounded-full border border-white/20" />
-
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white">
-
-                      <Icon className="h-4 w-4 text-black" />
-
-                    </div>
-
-                  </div>
-
-                </div>
-                                {/* Domain Title */}
-
-                <h3
-                  className="text-4xl md:text-5xl font-black uppercase leading-none"
-                  style={{ fontFamily: "var(--font-display)" }}
+              <div key={domain.id} className="cd-case opacity-0">
+                {/* Domain label */}
+                <p
+                  className="text-center mb-4 text-sm font-bold uppercase tracking-[0.3em]"
+                  style={{ color: accent.text, fontFamily: "var(--font-body)" }}
                 >
                   {domain.name}
-                </h3>
-
-                {/* Description */}
-
-                <p
-                  className="mt-5 text-lg font-bold leading-relaxed"
-                  style={{ fontFamily: "var(--font-body)" }}
-                >
-                  {domain.description}
                 </p>
 
-                
-                {/* Stats */}
+                {/* The CD holder */}
+                <button
+                  onClick={() => setActiveDomain(domain.id)}
+                  className="cd-holder-btn group relative block cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1DB954] rounded-2xl"
+                  aria-label={`View details for ${domain.name}`}
+                >
+                  {/* Glow behind the case */}
+                  <div
+                    className="absolute rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-500 blur-[60px] -z-10"
+                    style={{
+                      background: accent.glow,
+                      top: "10%",
+                      left: "5%",
+                      width: "90%",
+                      height: "80%",
+                    }}
+                  />
 
-                <div className="mt-8 flex flex-wrap gap-3">
-
-                 <div className="flex items-center gap-2 rounded-full border-2 border-black bg-white px-4 py-2 font-black text-black">
-
-  <Users className="h-4 w-4 text-black" />
-
-  <span>{domain.teamSlots}</span>
-
-</div>
-
-                  
-                  <div className="flex items-center gap-2 rounded-full border-2 border-black bg-flat-green px-4 py-2 font-black">
-
-                    <Trophy className="h-4 w-4" />
-
-                    <span>{domain.prize}</span>
-
-                  </div>
-
-                </div>
-
-                {/* Bottom Row */}
-
-                <div className="mt-10 flex items-center justify-between">
-
-                  <div>
-
-                    <p className="text-xs font-black uppercase tracking-[0.3em]">
-                      Genre
-                    </p>
-
-                    <p
-                      className="mt-1 text-xl font-black uppercase"
+                  {/* CD Case container */}
+                  <div className="relative w-[280px] h-[280px] md:w-[320px] md:h-[320px] transition-transform duration-500 group-hover:scale-[1.04]">
+                    {/* The CD disc (sits behind the case) */}
+                    <div
+                      className="absolute flex items-center justify-center z-0"
                       style={{
-                        fontFamily: "var(--font-display)",
+                        top: "6%",
+                        left: "6%",
+                        width: "88%",
+                        height: "88%",
                       }}
                     >
-                      {domain.name}
+                      <div className="w-full h-full rounded-full overflow-hidden transition-transform duration-[3s] ease-linear group-hover:rotate-[360deg]">
+                        <Image
+                          src={cdImages[domain.id]}
+                          alt={`${domain.name} CD`}
+                          width={400}
+                          height={400}
+                          className="w-full h-full object-cover rounded-full"
+                          draggable={false}
+                        />
+                      </div>
+                    </div>
+
+                    {/* The transparent CD case overlay */}
+                    <div className="absolute inset-0 z-10">
+                      <Image
+                        src="/cd.png"
+                        alt="CD Case"
+                        width={400}
+                        height={400}
+                        className="w-full h-full object-contain"
+                        style={{
+                          filter: "drop-shadow(4px 8px 16px rgba(0,0,0,0.5))",
+                        }}
+                        draggable={false}
+                      />
+                    </div>
+
+                    {/* Shine effect on hover */}
+                    <div className="absolute inset-0 z-20 rounded-2xl overflow-hidden pointer-events-none">
+                      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                    </div>
+                  </div>
+
+                  {/* Click hint */}
+                  <p className="text-center mt-4 text-xs text-white/30 group-hover:text-white/60 transition-colors duration-300 font-medium tracking-wider uppercase">
+                    Click to explore →
+                  </p>
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════
+          Domain Detail Modal / Overlay
+         ══════════════════════════════════════════ */}
+      {activeDomainData && (() => {
+        const accent = domainAccents[activeDomainData.id];
+        return (
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+            onClick={() => setActiveDomain(null)}
+          >
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+              style={{ animation: "fadeIn 0.3s ease-out forwards" }}
+            />
+
+            {/* Modal Content */}
+            <div
+              className="relative z-10 mx-4 w-full max-w-2xl"
+              onClick={(e) => e.stopPropagation()}
+              style={{ animation: "modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setActiveDomain(null)}
+                className="absolute -top-12 right-0 flex items-center gap-2 text-white/50 hover:text-white transition-colors text-sm cursor-pointer"
+              >
+                <span className="hidden md:inline">ESC</span>
+                <X className="h-5 w-5" />
+              </button>
+
+              <div
+                className="rounded-3xl border border-white/10 p-8 md:p-12 overflow-hidden relative"
+                style={{
+                  background: `linear-gradient(145deg, ${accent.bg}15 0%, #1a1a1a 40%, #111 100%)`,
+                }}
+              >
+                {/* Decorative glow */}
+                <div
+                  className="absolute -top-20 -right-20 w-60 h-60 rounded-full blur-[100px] opacity-30"
+                  style={{ background: accent.bg }}
+                />
+
+                <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center md:items-start">
+                  {/* CD artwork */}
+                  <div className="flex-shrink-0 relative w-40 h-40 md:w-48 md:h-48">
+                    <div
+                      className="w-full h-full rounded-full overflow-hidden border-2"
+                      style={{
+                        borderColor: accent.bg + "40",
+                        animation: "cdSpin 8s linear infinite",
+                      }}
+                    >
+                      <Image
+                        src={cdImages[activeDomainData.id]}
+                        alt={activeDomainData.name}
+                        width={200}
+                        height={200}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    {/* Center hole overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-5 h-5 rounded-full bg-[#111] border border-white/10" />
+                    </div>
+                  </div>
+
+                  {/* Details */}
+                  <div className="flex-1 text-center md:text-left">
+                    <p
+                      className="text-xs font-bold uppercase tracking-[0.4em] mb-2"
+                      style={{ color: accent.text }}
+                    >
+                      DOMAIN
                     </p>
 
+                    <h3
+                      className="text-3xl md:text-4xl font-black text-white uppercase leading-tight"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {activeDomainData.name}
+                    </h3>
+
+                    <p
+                      className="mt-4 text-white/60 text-base leading-relaxed"
+                      style={{ fontFamily: "var(--font-body)" }}
+                    >
+                      {activeDomainData.description}
+                    </p>
+
+                    {/* Stats */}
+                    <div className="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
+                      <div
+                        className="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold"
+                        style={{
+                          backgroundColor: accent.bg + "20",
+                          color: accent.text,
+                          border: `1px solid ${accent.bg}30`,
+                        }}
+                      >
+                        <Users className="h-4 w-4" />
+                        <span>{activeDomainData.teamSlots}</span>
+                      </div>
+
+                      <div className="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold bg-[#1DB954]/20 text-[#7EE8A5] border border-[#1DB954]/30">
+                        <Trophy className="h-4 w-4" />
+                        <span>{activeDomainData.prize}</span>
+                      </div>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="mt-8">
+                      <a
+                        href="#outro"
+                        onClick={() => setActiveDomain(null)}
+                        className="inline-flex items-center gap-2 rounded-full px-8 py-3 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:scale-105"
+                        style={{
+                          backgroundColor: accent.bg,
+                          color: "#000",
+                        }}
+                      >
+                        Register Now
+                      </a>
+                    </div>
                   </div>
-
-                  {/* Play Button */}
-
-                  <div
-                    className="
-                      flex
-                      h-16
-                      w-16
-                      items-center
-                      justify-center
-                      rounded-full
-                      border-4
-                      border-black
-                      bg-flat-green
-                      shadow-[4px_4px_0_#000]
-                      transition-all
-                      duration-300
-                      group-hover:scale-110
-                      group-hover:rotate-12
-                    "
-                  >
-                    <Play className="ml-1 h-7 w-7 fill-black text-black" />
-                  </div>
-
                 </div>
-
               </div>
+            </div>
+          </div>
+        );
+      })()}
 
-            );
-
-          })}
-                  </div>
-      </div>
+      {/* Keyframe animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes modalSlideUp {
+          from {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        @keyframes cdSpin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </section>
   );
 }

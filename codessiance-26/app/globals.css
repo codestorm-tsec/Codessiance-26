@@ -37,6 +37,15 @@
   --color-spotify-green: #1DB954;
   --color-spotify-white: #FFFFFF;
 
+  /* ── Bold Flat Colors (Wrapped Neobrutalist) ── */
+  --color-flat-orange: #FF6B35;
+  --color-flat-pink: #FF3EA5;
+  --color-flat-yellow: #FFD23F;
+  --color-flat-blue: #3D5AFE;
+  --color-flat-green: #1DB954;
+  --color-flat-red: #FF4632;
+  --color-flat-purple: #8B5CF6;
+
   /* shadcn overrides */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
