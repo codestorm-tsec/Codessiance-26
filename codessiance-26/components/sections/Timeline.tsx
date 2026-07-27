@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import { TIMELINE_EVENTS } from "@/lib/constants";
 import { ConcentricCircles, VerticalBars, DotGrid } from "@/components/ui/DecorativePatterns";
 
@@ -96,14 +97,6 @@ export default function Timeline() {
         ref={pinTargetRef}
         className="w-full h-screen flex flex-col justify-between pt-6 pb-8 px-6 md:px-12 relative"
       >
-        {/* Decorative: 2026 Vertical Image */}
-        <div className="absolute top-[40vh] right-20 translate-x-[50%] md:translate-x-[45%] opacity-80 pointer-events-none hidden lg:block mix-blend-multiply z-0">
-          <img
-            src="/2026.png"
-            alt="2026"
-            className="w-auto h-[25vh] md:h-[30vh] object-contain -rotate-90"
-          />
-        </div>
 
         {/* Top Header */}
         <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -134,12 +127,20 @@ export default function Timeline() {
               border: "2px solid #000",
             }}
           >
-            {/* Background Image */}
-            <img
-              src={`/timelinecards/card${(activeIndex % 6) + 1}.png`}
-              alt="Timeline Background"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+            {/* Background Images (pre-rendered for smooth scroll) */}
+            {[1, 2, 3, 4, 5, 6].map((num) => (
+              <Image
+                key={num}
+                src={`/timelinecards/card${num}.png`}
+                alt={`Timeline Background ${num}`}
+                fill
+                priority={num === 1 || num === 2}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className={`object-cover transition-opacity duration-300 ${
+                  ((activeIndex % 6) + 1) === num ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))}
 
             {/* Inner Content Overlay */}
             <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between z-10">

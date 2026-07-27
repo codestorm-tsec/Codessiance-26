@@ -77,51 +77,16 @@ export default function Hero() {
       >
         <div className="relative w-full flex flex-col items-center justify-center">
 
-          {/* Huge Background '2026' */}
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0 mix-blend-exclusion"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(8rem, 30vw, 26rem)",
-              fontWeight: "900",
-              color: "#F0EDEA",
-              lineHeight: 0.8,
-            }}
-          >
-            2026
-          </div>
 
-          {/* Main Title Block */}
-          <div className="relative z-10 my-16 md:my-24 w-full flex justify-center perspective-1000">
-            <div className="group relative">
-              <div className="relative bg-[#1A1A1A] border-4 border-[#1DB954] text-[#F0EDEA] px-8 sm:px-14 md:px-24 py-8 sm:py-12 shadow-[12px_12px_0px_0px_rgba(29,185,84,1)] overflow-hidden transition-transform hover:-translate-y-2 hover:-translate-x-2">
-                <h1
-                  className="relative z-10 text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter leading-none"
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  Codeissance
-                </h1>
-              </div>
-            </div>
-          </div>
 
-          {/* Bold 26 Overlay */}
-          <div
-            className="absolute -bottom-8 md:-bottom-16 right-[5%] md:right-[15%] pointer-events-none select-none z-20 transform rotate-[-4deg]"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(6rem, 16vw, 14rem)",
-              fontWeight: "900",
-              color: "#FF4632",
-              lineHeight: 0.8,
-              WebkitTextStroke: "4px #1A1A1A",
-              textShadow: "6px 6px 0px #1A1A1A"
-            }}
-          >
-            &apos;26
+          {/* Main Title / Typography SVG */}
+          <div className="relative z-10 my-10 md:my-16 w-full max-w-6xl mx-auto flex justify-center px-2 sm:px-6">
+            <img 
+              src="/TYPO.svg" 
+              alt="Codeissance '26" 
+              className="w-full h-auto transition-transform hover:scale-[1.02] duration-500" 
+              draggable={false}
+            />
           </div>
         </div>
 
