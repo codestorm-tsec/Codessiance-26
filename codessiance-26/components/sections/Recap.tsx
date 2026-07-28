@@ -365,7 +365,7 @@ FAQ
 <h2
 className="
 mt-10
-text-5xl
+text-4xl
 sm:text-6xl
 md:text-8xl
 font-black
@@ -446,8 +446,10 @@ hover:shadow-[0_20px_60px_rgba(29,185,84,0.15)]
 
 <AccordionTrigger
 className="
-px-8
-py-7
+px-5
+sm:px-8
+py-5
+sm:py-7
 text-left
 no-underline
 hover:no-underline
@@ -566,13 +568,16 @@ group-hover:text-[#1DB954]
 
 <div
 className="
-mx-8
-mb-8
+mx-5
+sm:mx-8
+mb-5
+sm:mb-8
 rounded-3xl
 border
 border-[#121212]/10
 bg-[#EBE6DF]
-p-7
+p-5
+sm:p-7
 "
 >
 

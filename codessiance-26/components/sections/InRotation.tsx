@@ -75,7 +75,7 @@ export default function InRotation() {
         {/* Editorial Feature Header matching Spotify Section 4 */}
         <div ref={headerRef} className="mb-20 max-w-3xl opacity-0">
           <h2
-            className="text-4xl sm:text-6xl md:text-7xl font-normal leading-[1.1] text-white tracking-tight"
+            className="text-3xl sm:text-6xl md:text-7xl font-normal leading-[1.1] text-white tracking-tight"
             style={{ fontFamily: "var(--font-body)" }}
           >
             Find Your <strong className="font-black text-white block mt-2">Codeissance Club</strong>

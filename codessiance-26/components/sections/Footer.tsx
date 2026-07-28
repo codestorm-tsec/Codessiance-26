@@ -40,7 +40,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="w-full bg-black text-white pt-16 pb-12 px-6 sm:px-10 lg:px-16 border-t border-white/10 font-sans">
+    <footer className="w-full bg-black text-white pt-12 sm:pt-16 pb-8 sm:pb-12 px-4 sm:px-10 lg:px-16 border-t border-white/10 font-sans">
       <div className="max-w-7xl mx-auto">
         {/* Main Grid Section — OG Spotify Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 mb-16 items-start">

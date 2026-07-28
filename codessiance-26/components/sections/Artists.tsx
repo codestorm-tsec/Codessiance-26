@@ -94,7 +94,7 @@ export default function Artists() {
             Featured Artists
           </p>
           <h2
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase mt-6"
+            className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase mt-6"
             style={{ fontFamily: "var(--font-display)" }}
           >
             The Crew<br/>Behind<br/>
@@ -103,7 +103,7 @@ export default function Artists() {
         </div>
 
         {/* Crew grid */}
-        <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8 mb-24">
+        <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8 mb-24">
           {CREW_MEMBERS.map((member, index) => {
             const accent = cardColors[index % cardColors.length];
 
@@ -151,7 +151,7 @@ export default function Artists() {
           <div className="inline-flex flex-col items-center p-10 md:p-14 border-4 border-black bg-flat-pink shadow-[12px_12px_0_0_#000] max-w-2xl">
             <UserPlus className="w-12 h-12 text-black mb-6" />
             <h3
-              className="text-3xl md:text-5xl font-black mb-4 uppercase leading-none"
+              className="text-2xl sm:text-3xl md:text-5xl font-black mb-4 uppercase leading-none"
               style={{ fontFamily: "var(--font-display)" }}
             >
               Want to be a Featured Artist?

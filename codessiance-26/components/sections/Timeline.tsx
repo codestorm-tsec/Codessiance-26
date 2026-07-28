@@ -102,7 +102,7 @@ export default function Timeline() {
         <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h2
-              className="text-3xl sm:text-5xl md:text-6xl font-normal leading-tight text-black tracking-tight"
+              className="text-2xl sm:text-5xl md:text-6xl font-normal leading-tight text-black tracking-tight"
               style={{ fontFamily: "var(--font-body)" }}
             >
               The <strong className="font-black text-black">Top Lists</strong> of 2026
@@ -116,7 +116,7 @@ export default function Timeline() {
           <div
             ref={cardRef}
             key={activeIndex}
-            className="w-[85%] max-w-[420px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl relative"
+            className="w-[90%] sm:w-[85%] max-w-[420px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl relative"
             style={{
               border: "2px solid #000",
             }}
@@ -144,9 +144,9 @@ export default function Timeline() {
               </div>
 
               {/* Event Time (Positioned in the colored stripe) */}
-              <div className="absolute bottom-[34%] left-0 w-full px-6 md:px-8 text-center">
+              <div className="absolute bottom-[34%] left-0 w-full px-4 md:px-8 text-center">
                 <div
-                  className="text-5xl sm:text-5xl md:text-7xl font-bold tracking-tighter leading-none"
+                  className="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tighter leading-none"
                   style={{
                     fontFamily: "var(--font-display)",
                     color: "#EAE5DE",
@@ -158,9 +158,9 @@ export default function Timeline() {
               </div>
 
               {/* Event Label (Positioned in the black bottom area) */}
-              <div className="absolute bottom-[16%] translate-y-[50%] left-0 w-full px-6 text-white text-center">
+              <div className="absolute bottom-[16%] translate-y-[50%] left-0 w-full px-4 text-white text-center">
                 <div
-                  className="text-lg sm:text-xl md:text-5xl font-bold uppercase tracking-wide"
+                  className="text-base sm:text-xl md:text-5xl font-bold uppercase tracking-wide"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {event.label}

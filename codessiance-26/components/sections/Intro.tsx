@@ -113,7 +113,7 @@ export default function Intro() {
           {/* Right Column: High-Impact Editorial Text (7 cols) */}
           <div ref={rightRef} className="lg:col-span-7 pt-4 opacity-0">
             <p
-              className="text-3xl sm:text-4xl md:text-5xl leading-[1.25] font-normal text-[#1A1A1A]"
+              className="text-2xl sm:text-4xl md:text-5xl leading-[1.25] font-normal text-[#1A1A1A]"
               style={{ fontFamily: "var(--font-body)" }}
             >
               <strong className="font-black text-black">Codeissance &apos;26</strong> is here, and it&apos;s more dynamic, personal, and{" "}
@@ -126,8 +126,8 @@ export default function Intro() {
       </div>
 
       {/* Wavy Stamp / Badge hanging over section boundary */}
-      <div className="absolute -bottom-24 right-4 md:right-16 z-30 pointer-events-auto">
-        <a href="#outro" className="block relative w-56 h-56 md:w-72 md:h-72 group">
+      <div className="absolute -bottom-16 md:-bottom-24 right-2 md:right-16 z-30 pointer-events-auto">
+        <a href="#outro" className="block relative w-32 h-32 sm:w-48 sm:h-48 md:w-72 md:h-72 group">
           <div
             ref={stampRef}
             className="w-full h-full flex items-center justify-center transition-transform duration-300 group-hover:scale-105 drop-shadow-xl"

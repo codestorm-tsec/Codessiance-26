@@ -84,7 +84,7 @@ export default function Hero() {
             <div className="group relative">
               <div className="relative bg-[#1A1A1A] border-4 border-[#1DB954] text-[#F0EDEA] px-8 sm:px-14 md:px-24 py-8 sm:py-12 shadow-[12px_12px_0px_0px_rgba(29,185,84,1)] overflow-hidden transition-transform hover:-translate-y-2 hover:-translate-x-2">
                 <h1
-                  className="relative z-10 text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter leading-none"
+                  className="relative z-10 text-4xl sm:text-6xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter leading-none break-words"
                   style={{
                     fontFamily: "var(--font-display)",
                     letterSpacing: "-0.02em",
@@ -114,8 +114,8 @@ export default function Hero() {
         </div>
 
         {/* Subtitle tag */}
-        <div className="mt-16 md:mt-24 text-center z-20">
-          <div className="inline-flex items-center gap-4 px-6 sm:px-8 py-3 sm:py-4 bg-[#1A1A1A] shadow-[8px_8px_0px_0px_rgba(255,70,50,1)] hover:-translate-y-1 transition-transform border border-transparent">
+        <div className="mt-16 md:mt-24 text-center z-20 mx-4">
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 px-4 sm:px-8 py-2 sm:py-4 bg-[#1A1A1A] shadow-[8px_8px_0px_0px_rgba(255,70,50,1)] hover:-translate-y-1 transition-transform border border-transparent">
             <span className="w-3 h-3 rounded-full bg-[#1DB954] animate-pulse"></span>
             <p
               className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-[0.25em] text-[#F0EDEA]"

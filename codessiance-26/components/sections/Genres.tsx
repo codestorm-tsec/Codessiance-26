@@ -101,20 +101,9 @@ export default function Genres() {
       ref={sectionRef}
       id="genres"
       className="relative overflow-hidden py-24 md:py-36"
-      style={{ backgroundColor: "#000000" }}
+      style={{ backgroundColor: "#1a1a1a" }}
     >
-      {/* Subtle background shimmer */}
-      <div className="pointer-events-none absolute inset-0">
-        <div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          style={{
-            width: "140%",
-            height: "140%",
-            background:
-              "radial-gradient(ellipse at center, rgba(29,185,84,0.06) 0%, transparent 60%)",
-          }}
-        />
-      </div>
+
 
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         {/* Header */}
@@ -130,7 +119,7 @@ export default function Genres() {
           </div>
 
           <h2
-            className="text-5xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tight text-white"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tight text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
             Find your
@@ -191,7 +180,7 @@ export default function Genres() {
                   />
 
                   {/* CD Case container */}
-                  <div className="relative w-[280px] h-[280px] md:w-[320px] md:h-[320px] transition-transform duration-500 group-hover:scale-[1.04]">
+                  <div className="relative w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] md:w-[320px] md:h-[320px] transition-transform duration-500 group-hover:scale-[1.04]">
                     {/* The CD disc (sits behind the case) */}
                     <div
                       className="absolute flex items-center justify-center z-0"

@@ -56,7 +56,7 @@ export default function TOCFolder({ items }: TOCFolderProps) {
                   <li key={idx}>
                     <a 
                       href={item.href} 
-                      className="block px-4 py-3 md:py-4 text-base md:text-xl font-black text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors"
+                      className="block px-4 py-3 md:py-4 text-base md:text-xl font-black text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-colors"
                       style={{ fontFamily: "var(--font-display)", letterSpacing: "0.02em" }}
                       onClick={(e) => {
                         e.stopPropagation(); // Keep folder open if they just click the link

@@ -100,7 +100,7 @@ export default function TopArtist() {
         {/* Header */}
         <div ref={headerRef} className="mb-20 max-w-3xl opacity-0">
           <h2
-            className="text-4xl sm:text-6xl md:text-7xl font-normal leading-[1.1] text-black tracking-tight"
+            className="text-3xl sm:text-6xl md:text-7xl font-normal leading-[1.1] text-black tracking-tight"
             style={{ fontFamily: "var(--font-body)" }}
           >
             Codeissance &apos;26:
