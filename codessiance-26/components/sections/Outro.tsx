@@ -251,7 +251,7 @@ export default function Outro() {
               key={i}
               className="flex items-center gap-16 text-3xl font-black uppercase tracking-tight"
             >
-              <span>CodeSsiance '26</span>
+              <span>Codeissance '26</span>
               <span className="text-[#1DB954]">•</span>
               <span>Register Now</span>
               <span className="text-[#1DB954]">•</span>

@@ -116,19 +116,11 @@ export default function Intro() {
               className="text-3xl sm:text-4xl md:text-5xl leading-[1.25] font-normal text-[#1A1A1A]"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              <strong className="font-black text-black">Codessiance &apos;26</strong> is here, and it&apos;s more dynamic, personal, and{" "}
+              <strong className="font-black text-black">Codeissance &apos;26</strong> is here, and it&apos;s more dynamic, personal, and{" "}
               <strong className="font-black italic text-black">unmistakably you</strong> than ever before. This year brings fresh ways to build, innovate, and{" "}
               <strong className="font-black text-black">moments that defined your year</strong>, and to share them with the world around you.
             </p>
 
-            <div className="mt-10">
-              <a
-                href="#outro"
-                className="pill-btn pill-btn-dark text-sm py-3 px-8 inline-flex"
-              >
-                READ MORE
-              </a>
-            </div>
           </div>
         </div>
       </div>

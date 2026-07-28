@@ -99,7 +99,7 @@ export default function PlayerBar() {
               className="text-xs text-spotify-grey-subtle truncate"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Codessiance &apos;26
+              Codeissance &apos;26
             </p>
           </div>
         </div>

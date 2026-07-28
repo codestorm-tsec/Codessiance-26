@@ -109,12 +109,6 @@ export default function Timeline() {
             </h2>
           </div>
 
-          <a
-            href="#prizes"
-            className="pill-btn pill-btn-outline text-xs py-2.5 px-6 shrink-0"
-          >
-            READ MORE
-          </a>
         </div>
 
         {/* Center Event Card Stage */}

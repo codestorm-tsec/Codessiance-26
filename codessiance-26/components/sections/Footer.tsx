@@ -206,7 +206,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Social Icons & Get Codessiance CTA Button */}
+            {/* Social Icons & Get Codeissance CTA Button */}
             <div className="space-y-6">
               <div className="flex items-center gap-3">
                 <a

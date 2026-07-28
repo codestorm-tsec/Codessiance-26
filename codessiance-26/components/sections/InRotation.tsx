@@ -78,17 +78,9 @@ export default function InRotation() {
             className="text-4xl sm:text-6xl md:text-7xl font-normal leading-[1.1] text-white tracking-tight"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Find Your <strong className="font-black text-white block mt-2">Codessiance Club</strong>
+            Find Your <strong className="font-black text-white block mt-2">Codeissance Club</strong>
           </h2>
 
-          <div className="mt-8">
-            <a
-              href="#recap"
-              className="pill-btn pill-btn-light text-xs py-3 px-8 inline-flex"
-            >
-              READ MORE
-            </a>
-          </div>
         </div>
 
         {/* Content Layout: Sponsors Full Width */}
