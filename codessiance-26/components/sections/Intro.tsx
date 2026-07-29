@@ -98,22 +98,24 @@ export default function Intro() {
       </div>
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
+
           {/* Left Column: Folder Graphic + Contents TOC (5 cols) */}
           <div ref={leftRef} className="lg:col-span-5 opacity-0">
-            
+
             {/* Black Polka Dots Cluster */}
             <div className="mb-6 pointer-events-none">
               <DotGrid rows={4} cols={6} dotSize={22} gap={14} color="#1A1A1A" />
             </div>
+            <div className="translate-y-35">
+              <TOCFolder items={TOC_ITEMS} />
+            </div>
 
-            <TOCFolder items={TOC_ITEMS} />
           </div>
 
           {/* Right Column: High-Impact Editorial Text (7 cols) */}
           <div ref={rightRef} className="lg:col-span-7 pt-4 opacity-0">
             <p
-              className="text-2xl sm:text-4xl md:text-5xl leading-[1.25] font-normal text-[#1A1A1A]"
+              className="text-2xl sm:text-4xl md:text-4xl leading-[1.25] font-normal text-[#1A1A1A]"
               style={{ fontFamily: "var(--font-body)" }}
             >
               <strong className="font-black text-black">Codeissance &apos;26</strong> is here, and it&apos;s more dynamic, personal, and{" "}
