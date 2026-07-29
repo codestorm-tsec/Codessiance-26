@@ -160,8 +160,8 @@ export default function Timeline() {
               {/* Event Label (Positioned in the black bottom area) */}
               <div className="absolute bottom-[16%] translate-y-[50%] left-0 w-full px-4 text-white text-center">
                 <div
-                  className="text-base sm:text-xl md:text-5xl font-bold uppercase tracking-wide"
-                  style={{ fontFamily: "var(--font-display)" }}
+                  className={`font-bold uppercase tracking-wide ${event.fontSize || "text-base sm:text-xl md:text-5xl"}`}
+                  style={{ fontFamily: event.font || "var(--font-display)" }}
                 >
                   {event.label}
                 </div>
